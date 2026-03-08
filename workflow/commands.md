@@ -23,6 +23,16 @@ Start the mobile web app:
 pnpm dev:web
 ```
 
+Start the mobile web app in browser-local test mode:
+```bash
+pnpm dev:web:local
+```
+
+Start the mobile web app in Firebase emulator mode:
+```bash
+pnpm dev:web:emulator
+```
+
 Run all typechecks:
 ```bash
 pnpm typecheck
@@ -31,6 +41,11 @@ pnpm typecheck
 Build the full prototype baseline:
 ```bash
 pnpm build
+```
+
+Run the local smoke e2e:
+```bash
+BASE_URL=http://127.0.0.1:4173 pnpm e2e:local
 ```
 
 ## Repository inspection
@@ -183,3 +198,4 @@ sed -n '1,260p' PROGRESS.md
 - Use `rg` for search whenever possible.
 - Use `apply_patch` for manual file edits.
 - Replace the placeholder Firebase project id in `prototype/firebase/.firebaserc` before live deployment.
+- Firestore and Storage emulators require Java on this machine; use `pnpm dev:web:local` when Java is unavailable.

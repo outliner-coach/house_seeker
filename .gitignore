@@ -3,7 +3,7 @@ node_modules/
 .pnpm-store/
 .firebase/
 dist/
-lib/
+prototype/functions/lib/
 .env
 .env.local
 .env.*.local

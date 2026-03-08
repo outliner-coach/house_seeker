@@ -1,7 +1,7 @@
 import { useAuth } from '@/features/auth/use-auth'
 
 export function SettingsPage() {
-  const { appConfigured, signOutUser, user } = useAuth()
+  const { appConfigured, emulatorMode, localMode, signOutUser, user } = useAuth()
 
   return (
     <div className="stack">
@@ -16,6 +16,10 @@ export function SettingsPage() {
           <div>
             <dt>Config</dt>
             <dd>{appConfigured ? 'Firebase connected' : 'Shell mode'}</dd>
+          </div>
+          <div>
+            <dt>Mode</dt>
+            <dd>{localMode ? 'Local browser mode' : emulatorMode ? 'Firebase emulators' : 'Live Firebase'}</dd>
           </div>
         </dl>
         <button onClick={() => void signOutUser()} type="button">

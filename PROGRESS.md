@@ -24,6 +24,8 @@ Status:
 - automatic household bootstrap is now wired
 - Firestore-backed place creation and hierarchy browsing are now in progress
 - selected-place capture upload is now in progress
+- local browser mode is now available for testing without Firebase setup
+- smoke e2e now passes against the local mode dev server
 
 Current repository contents:
 - `.gitignore`
@@ -70,7 +72,7 @@ Current repository contents:
 - `PROGRESS.md`
 
 Recommended next task:
-- finish place detail and rename, then split capture upload into a dedicated capture surface
+- write the stub analysis transition and real review queue so uploaded captures can move past `analysis_pending`
 
 ## Work log
 
@@ -274,6 +276,34 @@ Open follow-up:
 - move capture UI out of the places list screen into dedicated place detail or capture screens
 - enqueue or simulate analysis work after upload
 - add retry/error handling for partially uploaded captures
+
+### 2026-03-08 - Local testing path and smoke e2e completed
+
+Completed:
+- added browser-local test mode so the app can run without Firebase credentials or local emulators
+- kept Firebase emulator mode available, while documenting that Firestore emulators need Java on this machine
+- added a committed Playwright smoke script for local login, place creation, and capture upload
+- added local-mode and emulator-mode env examples and root scripts for reproducible runs
+- ran the smoke test successfully against `pnpm dev:web:local`
+
+Outputs:
+- `prototype/mobile-web/src/lib/local/local-store.ts`
+- `prototype/mobile-web/e2e/local-smoke.mjs`
+- `prototype/mobile-web/e2e/fixtures/fixture-capture.svg`
+- updated `prototype/mobile-web/src/features/auth/`
+- updated `prototype/mobile-web/src/lib/firebase/client.ts`
+- updated root `package.json`
+
+Verified commands:
+- `pnpm lint:web`
+- `pnpm typecheck`
+- `pnpm build`
+- `pnpm dev:web:local`
+- `BASE_URL=http://127.0.0.1:4173 pnpm e2e:local`
+
+Open follow-up:
+- build the review queue and stub analysis transition on top of the now-tested upload flow
+- reduce the frontend bundle size once the core slice is stable
 
 ### 2026-03-08 - Git initialized and prepared for publishing
 

@@ -5,6 +5,7 @@ import { ref, uploadBytes } from 'firebase/storage'
 import { useAuth } from '@/features/auth/use-auth'
 import { useHousehold } from '@/features/household/use-household'
 import { getFirebaseServices } from '@/lib/firebase/client'
+import { createLocalCapture, listLocalCaptures } from '@/lib/local/local-store'
 
 function captureQueryKey(householdId: string | null, placeId: string | null) {
   return ['households', householdId, 'places', placeId, 'captures'] as const
@@ -33,9 +34,17 @@ export function usePlaceCaptures(place: PlaceRecord | null) {
 
   const captures = useQuery({
     queryKey: captureQueryKey(householdId, place?.id ?? null),
-    enabled: Boolean(appConfigured && services.db && householdId && place),
+    enabled: Boolean(appConfigured && householdId && place),
     queryFn: async () => {
-      if (!services.db || !householdId || !place) {
+      if (!householdId || !place) {
+        return [] as CaptureRecord[]
+      }
+
+      if (services.localMode) {
+        return listLocalCaptures(place.id)
+      }
+
+      if (!services.db) {
         return [] as CaptureRecord[]
       }
 
@@ -56,7 +65,20 @@ export function usePlaceCaptures(place: PlaceRecord | null) {
 
   const uploadCapture = useMutation({
     mutationFn: async (file: File) => {
-      if (!services.db || !services.storage || !householdId || !user || !place) {
+      if (!householdId || !user || !place) {
+        throw new Error('Capture upload is unavailable.')
+      }
+
+      if (services.localMode) {
+        return createLocalCapture({
+          fileName: file.name,
+          householdId,
+          place,
+          user,
+        })
+      }
+
+      if (!services.db || !services.storage) {
         throw new Error('Capture upload is unavailable.')
       }
 

@@ -27,11 +27,14 @@ Implemented so far:
 - household bootstrap wiring is active
 - Firestore-backed place creation and hierarchy browsing are active
 - selected-place capture upload is active
+- browser-local test mode and smoke e2e are active
 
 Useful commands:
 - `pnpm dev:web`
+- `pnpm dev:web:local`
 - `pnpm build:web`
 - `pnpm lint:web`
+- `BASE_URL=http://127.0.0.1:4173 pnpm e2e:local`
 
 Coordination note:
 - feature work should follow `workflow/implementation-plan.md`

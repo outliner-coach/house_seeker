@@ -4,6 +4,7 @@ import { collection, doc, getDocs, orderBy, query, writeBatch } from 'firebase/f
 import { useAuth } from '@/features/auth/use-auth'
 import { useHousehold } from '@/features/household/use-household'
 import { getFirebaseServices } from '@/lib/firebase/client'
+import { createLocalPlace, listLocalPlaces } from '@/lib/local/local-store'
 
 type CreatePlaceInput = {
   name: string
@@ -27,9 +28,17 @@ export function useHouseholdPlaces() {
 
   const places = useQuery({
     queryKey: placesQueryKey(householdId),
-    enabled: Boolean(appConfigured && services.db && householdId),
+    enabled: Boolean(appConfigured && householdId),
     queryFn: async () => {
-      if (!services.db || !householdId) {
+      if (!householdId) {
+        return [] as PlaceRecord[]
+      }
+
+      if (services.localMode) {
+        return listLocalPlaces()
+      }
+
+      if (!services.db) {
         return [] as PlaceRecord[]
       }
 
@@ -48,7 +57,7 @@ export function useHouseholdPlaces() {
 
   const createPlace = useMutation({
     mutationFn: async (input: CreatePlaceInput) => {
-      if (!services.db || !householdId || !user) {
+      if (!householdId || !user) {
         throw new Error('Household place creation is unavailable.')
       }
 
@@ -64,6 +73,21 @@ export function useHouseholdPlaces() {
 
       if (input.parentPlaceId && !parentPlace) {
         throw new Error('Selected parent place could not be found.')
+      }
+
+      if (services.localMode) {
+        return createLocalPlace({
+          householdId,
+          name,
+          parentPlaceId: parentPlace?.id ?? null,
+          places: places.data ?? [],
+          type: input.type,
+          user,
+        })
+      }
+
+      if (!services.db) {
+        throw new Error('Household place creation is unavailable.')
       }
 
       const now = new Date().toISOString()
@@ -120,7 +144,7 @@ export function useHouseholdPlaces() {
     createPlace: createPlace.mutateAsync,
     createPlaceError: createPlace.error instanceof Error ? createPlace.error.message : null,
     isCreatingPlace: createPlace.isPending,
-    isShellMode: !appConfigured || !services.db || !householdId,
+    isShellMode: !appConfigured || (!services.localMode && !services.db) || !householdId,
     places: places.data ?? [],
     placesError: places.error instanceof Error ? places.error.message : null,
     placesLoading: places.isLoading,

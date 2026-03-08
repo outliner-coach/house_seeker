@@ -15,6 +15,7 @@ import {
 } from '@house-seeker/shared'
 import { useAuth } from '@/features/auth/use-auth'
 import { getFirebaseServices } from '@/lib/firebase/client'
+import { ensureLocalHousehold } from '@/lib/local/local-store'
 import { HouseholdContext, type HouseholdContextValue } from './household-context-store'
 
 function buildDefaultHouseholdName(displayName: string | null, email: string | null) {
@@ -95,6 +96,21 @@ export function HouseholdProvider({ children }: PropsWithChildren) {
   useEffect(() => {
     async function syncHousehold() {
       if (!user || !appConfigured || !services.db) {
+        if (services.localMode && user) {
+          const localHousehold = ensureLocalHousehold(user)
+
+          setState((previous) => ({
+            ...previous,
+            bootstrapMode: 'created',
+            error: null,
+            household: localHousehold.household,
+            householdId: localHousehold.householdId,
+            loading: false,
+            member: localHousehold.member,
+          }))
+          return
+        }
+
         setState((previous) => ({
           ...previous,
           bootstrapMode: 'unavailable',
@@ -176,7 +192,7 @@ export function HouseholdProvider({ children }: PropsWithChildren) {
     }
 
     void syncHousehold()
-  }, [appConfigured, refreshToken, services.db, user])
+  }, [appConfigured, refreshToken, services.db, services.localMode, user])
 
   const value = useMemo(
     () => ({

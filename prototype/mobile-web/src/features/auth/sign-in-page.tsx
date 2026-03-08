@@ -2,7 +2,14 @@ import { useState } from 'react'
 import { useAuth } from './use-auth'
 
 export function SignInPage() {
-  const { appConfigured, sendEmailLink, signInWithGoogle } = useAuth()
+  const {
+    appConfigured,
+    emulatorMode,
+    localMode,
+    sendEmailLink,
+    signInForLocalTesting,
+    signInWithGoogle,
+  } = useAuth()
   const [email, setEmail] = useState('')
   const [message, setMessage] = useState('')
   const [pending, setPending] = useState(false)
@@ -35,6 +42,19 @@ export function SignInPage() {
     }
   }
 
+  async function handleLocalSignIn() {
+    setPending(true)
+    setMessage('')
+
+    try {
+      await signInForLocalTesting()
+    } catch (error) {
+      setMessage(error instanceof Error ? error.message : 'Unable to sign in locally.')
+    } finally {
+      setPending(false)
+    }
+  }
+
   return (
     <div className="auth-page">
       <div className="panel hero-panel">
@@ -49,10 +69,28 @@ export function SignInPage() {
             Firebase environment variables are missing. Add them before testing live auth.
           </div>
         ) : null}
+        {localMode ? (
+          <div className="notice">
+            Local mode is enabled. Sign in uses browser-local test data instead of Firebase.
+          </div>
+        ) : null}
+        {emulatorMode ? (
+          <div className="notice">
+            Emulator mode is enabled. Local anonymous sign-in is available for smoke testing.
+          </div>
+        ) : null}
       </div>
 
       <div className="panel stack">
         <h2>Sign in</h2>
+        {localMode || emulatorMode ? (
+          <>
+            <button disabled={pending || !appConfigured} onClick={handleLocalSignIn} type="button">
+              {localMode ? 'Continue with local test mode' : 'Continue with local emulator'}
+            </button>
+            <div className="divider">or</div>
+          </>
+        ) : null}
         <form className="stack" onSubmit={handleEmailSubmit}>
           <label className="stack" htmlFor="email">
             <span>Email link</span>

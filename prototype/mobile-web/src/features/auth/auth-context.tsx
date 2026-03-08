@@ -3,6 +3,7 @@ import {
   isSignInWithEmailLink,
   onAuthStateChanged,
   sendSignInLinkToEmail,
+  signInAnonymously,
   signInWithEmailLink,
   signInWithPopup,
   signOut,
@@ -10,26 +11,40 @@ import {
 import { useEffect, useState, type PropsWithChildren } from 'react'
 import { AuthContext } from './auth-context-store'
 import { getFirebaseServices } from '@/lib/firebase/client'
+import {
+  clearLocalSessionUser,
+  readLocalSessionUser,
+  writeLocalSessionUser,
+} from '@/lib/local/local-store'
 
 const pendingEmailStorageKey = 'house-seeker.pendingEmail'
 
 export function AuthProvider({ children }: PropsWithChildren) {
   const services = getFirebaseServices()
-  const [loading, setLoading] = useState(services.appConfigured)
-  const [user, setUser] = useState<import('firebase/auth').User | null>(null)
+  const [loading, setLoading] = useState(!services.localMode && services.appConfigured)
+  const [user, setUser] = useState(() => readLocalSessionUser())
 
   useEffect(() => {
-    if (!services.auth) {
+    if (!services.auth || services.localMode) {
       return undefined
     }
 
     const unsubscribe = onAuthStateChanged(services.auth, (nextUser) => {
-      setUser(nextUser)
+      setUser(
+        nextUser
+          ? {
+              uid: nextUser.uid,
+              email: nextUser.email,
+              displayName: nextUser.displayName,
+              isAnonymous: nextUser.isAnonymous,
+            }
+          : null,
+      )
       setLoading(false)
     })
 
     return unsubscribe
-  }, [services.auth])
+  }, [services.auth, services.localMode])
 
   useEffect(() => {
     async function completeEmailLink() {
@@ -63,6 +78,26 @@ export function AuthProvider({ children }: PropsWithChildren) {
     await signInWithPopup(services.auth, new GoogleAuthProvider())
   }
 
+  async function signInForLocalTesting() {
+    if (services.localMode) {
+      const localUser = {
+        uid: `local-${crypto.randomUUID()}`,
+        email: 'local@house-seeker.test',
+        displayName: 'Local Tester',
+        isAnonymous: true,
+      }
+      writeLocalSessionUser(localUser)
+      setUser(localUser)
+      return
+    }
+
+    if (!services.auth || !services.emulatorMode) {
+      throw new Error('Local emulator sign-in is unavailable.')
+    }
+
+    await signInAnonymously(services.auth)
+  }
+
   async function sendEmailLink(email: string) {
     if (!services.auth || typeof window === 'undefined') {
       throw new Error('Firebase Auth is not configured.')
@@ -77,6 +112,12 @@ export function AuthProvider({ children }: PropsWithChildren) {
   }
 
   async function signOutUser() {
+    if (services.localMode) {
+      clearLocalSessionUser()
+      setUser(null)
+      return
+    }
+
     if (!services.auth) {
       return
     }
@@ -88,9 +129,12 @@ export function AuthProvider({ children }: PropsWithChildren) {
     <AuthContext.Provider
       value={{
         appConfigured: services.appConfigured,
+        emulatorMode: services.emulatorMode,
+        localMode: services.localMode,
         loading,
         user,
         sendEmailLink,
+        signInForLocalTesting,
         signInWithGoogle,
         signOutUser,
       }}

@@ -45,17 +45,18 @@ Known constraints:
 | Completed | P0 | Finish auth shell and household bootstrap | signed-in shell and automatic household provisioning | Household bootstrap now creates or resolves the member's household |
 | In progress | P1 | Build place hierarchy | place list, create flow, parent selection, and path browsing | Create + browse + nested parent flow are live; rename and richer place detail still pending |
 | In progress | P1 | Build capture upload flow | camera intake, capture records, Storage upload | Selected place can now upload one photo to Storage and create a capture record |
+| Completed | P1 | Establish a local test and smoke path | local mode login, browser-local data path, and reproducible e2e | `pnpm dev:web:local` and `pnpm e2e:local` now work on this machine |
 | Ready | P1 | Build review queue and confirmation | review list, candidate edits, confirmed item writes | Depends on capture flow and worker stub |
 | Ready | P1 | Build deterministic search and browse | search results, browse by place, item detail | Can start against shared item contracts |
-| Ready | P1 | Wire emulator and environment setup docs | `.env.example`, README updates, emulator routine | Keep future agent setup friction low |
+| In progress | P1 | Wire emulator and environment setup docs | `.env.example`, README updates, emulator routine | Local mode is documented; Firebase emulators still need Java on this machine |
 | Backlog | P2 | Draft privacy and threat boundaries | `architecture/privacy-threat-notes.md` | Use installed `security-threat-model` after system design exists |
 
 ## Suggested execution order
 
-1. Finish WS5 with rename and richer place detail behavior.
-2. Finish WS6 by extracting the capture flow out of the places screen into a dedicated place-detail or capture surface.
-3. Start WS7 with the current capture-analysis stub and Firestore writeback path.
-4. Start WS8 once capture writes can transition into `review_needed`.
+1. Start WS7 with the current capture-analysis stub and Firestore writeback path.
+2. Start WS8 so uploaded captures can transition into `review_needed` and appear in the review queue.
+3. Finish WS5 with rename and richer place detail behavior.
+4. Extract the capture flow out of the places screen into a dedicated place-detail or capture surface.
 
 ## Parallelization notes
 

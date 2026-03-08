@@ -1,11 +1,20 @@
 import { createContext } from 'react'
-import type { User } from 'firebase/auth'
+
+export type AppUser = {
+  uid: string
+  email: string | null
+  displayName: string | null
+  isAnonymous: boolean
+}
 
 export type AuthContextValue = {
   appConfigured: boolean
+  emulatorMode: boolean
+  localMode: boolean
   loading: boolean
-  user: User | null
+  user: AppUser | null
   sendEmailLink: (email: string) => Promise<void>
+  signInForLocalTesting: () => Promise<void>
   signInWithGoogle: () => Promise<void>
   signOutUser: () => Promise<void>
 }
