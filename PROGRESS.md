@@ -377,6 +377,22 @@ Open follow-up:
 - enable Firestore/Auth/Storage in `house--seeker` before switching the hosted build from local mode to live Firebase mode
 - choose Firestore region and create the database intentionally before deploying rules and real backend flows
 
+### 2026-03-08 - Live Firebase backend prerequisites completed
+
+Completed:
+- confirmed the default Firestore database exists in `house--seeker`
+- deployed Firestore rules from `prototype/firebase/firestore.rules`
+- initialized Firebase Storage in the project and deployed Storage rules from `prototype/firebase/storage.rules`
+- verified the hosted app now loads with live Firebase config, hides the missing-config notice, and shows Google plus email-link entry points
+- verified the Google button opens the hosted Firebase auth popup handler for `house--seeker`
+
+Outputs:
+- live backend project `house--seeker`
+- live site: `https://house--seeker.web.app`
+
+Open follow-up:
+- complete one real sign-in with a valid Google account or email-link mailbox to validate the end-to-end authenticated flow
+
 ### 2026-03-08 - Git initialized and prepared for publishing
 
 Completed:

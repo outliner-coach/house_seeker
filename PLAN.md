@@ -50,7 +50,7 @@ Known constraints:
 | Completed | P1 | Publish the hosted prototype baseline | Firebase Hosting deploy for the current build | Deployed to `https://house--seeker.web.app` |
 | Ready | P1 | Build review queue and confirmation | review list, candidate edits, confirmed item writes | Depends on capture flow and worker stub |
 | Ready | P1 | Build deterministic search and browse | search results, browse by place, item detail | Can start against shared item contracts |
-| In progress | P1 | Wire emulator and environment setup docs | `.env.example`, README updates, emulator routine | Local mode is documented; Firebase emulators still need Java on this machine |
+| In progress | P1 | Wire emulator and environment setup docs | `.env.example`, README updates, emulator routine | Local mode is documented; live Firebase config and cloud rules are now in place, but emulator use still needs Java on this machine |
 | Backlog | P2 | Draft privacy and threat boundaries | `architecture/privacy-threat-notes.md` | Use installed `security-threat-model` after system design exists |
 
 ## Suggested execution order
