@@ -7,6 +7,7 @@ Last updated: 2026-03-08
 Status:
 - project initialized as a documentation-first workspace
 - project is initialized as a Git repository
+- project is published to GitHub on `origin/main`
 - competitive benchmark baseline is complete
 - collaboration files are now in place
 - top-level directory structure is now defined
@@ -147,13 +148,18 @@ Completed:
 - initialized the local Git repository
 - added a minimal `.gitignore`
 - updated workflow notes for a Git-backed workspace
+- configured the GitHub remote `https://github.com/outliner-coach/house_seeker.git`
+- created the initial commit
+- pushed `main` to GitHub
 
 Outputs:
 - `.gitignore`
 - updated `workflow/commands.md`
+- Git remote `origin`
+- initial commit on `main`
 
 Open follow-up:
-- add the GitHub remote, create the initial commit, and push `main`
+- continue product-definition work on the Git-backed workspace
 
 ## Update format for future entries
 
