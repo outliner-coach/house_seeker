@@ -1,10 +1,16 @@
 import { useAuth } from '@/features/auth/use-auth'
 import { useHousehold } from '@/features/household/use-household'
 import { pendingReviews, placeSummaries, searchPreviewResults } from '@/features/household/mock-data'
+import { useHouseholdPlaces } from '@/features/places/use-household-places'
 
 export function HomePage() {
   const { appConfigured, user } = useAuth()
   const { bootstrapMode, householdId, member } = useHousehold()
+  const { isShellMode, places } = useHouseholdPlaces()
+  const trackedPlaces = isShellMode ? placeSummaries.length : places.length
+  const stalePlaces = isShellMode
+    ? placeSummaries.filter((place) => place.freshness === 'stale').length
+    : places.filter((place) => place.freshnessStatus === 'stale').length
 
   return (
     <div className="stack">
@@ -18,11 +24,11 @@ export function HomePage() {
             <span>Pending reviews</span>
           </div>
           <div className="stat-card">
-            <strong>{placeSummaries.filter((place) => place.freshness === 'stale').length}</strong>
+            <strong>{stalePlaces}</strong>
             <span>Stale places</span>
           </div>
           <div className="stat-card">
-            <strong>{placeSummaries.length}</strong>
+            <strong>{trackedPlaces}</strong>
             <span>Tracked places</span>
           </div>
         </div>

@@ -25,6 +25,7 @@ Implemented so far:
 - sign-in page with email-link and Google auth actions
 - Firebase client initialization from `VITE_FIREBASE_*`
 - household bootstrap wiring is active
+- Firestore-backed place creation and hierarchy browsing are active
 
 Useful commands:
 - `pnpm dev:web`

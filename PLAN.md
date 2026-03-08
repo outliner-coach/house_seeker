@@ -42,8 +42,8 @@ Known constraints:
 | Completed | P1 | Define detailed implementation workstreams | `workflow/implementation-plan.md` | Parallel execution plan and ownership rules documented |
 | Completed | P1 | Define prototype subfolder ownership | `prototype/mobile-web/`, `prototype/functions/`, `prototype/shared/`, `prototype/firebase/` | Parallel lanes created for agents |
 | Completed | P0 | Scaffold implementation workspace baseline | root workspace config, `prototype/mobile-web/`, `prototype/shared/`, `prototype/functions/`, `prototype/firebase/` | `pnpm` workspace, frontend shell, shared schemas, functions stub, and Firebase config now build |
-| In progress | P0 | Finish auth shell and household bootstrap | signed-in shell and automatic household provisioning | Sign-in flow and protected app shell exist; real household bootstrap is now wired |
-| Ready | P1 | Build place hierarchy | place list, detail, create, edit, and path browsing | Start in `prototype/mobile-web/src/features/places/` |
+| Completed | P0 | Finish auth shell and household bootstrap | signed-in shell and automatic household provisioning | Household bootstrap now creates or resolves the member's household |
+| In progress | P1 | Build place hierarchy | place list, create flow, parent selection, and path browsing | Create + browse + nested parent flow are live; rename and place detail still pending |
 | Ready | P1 | Build capture upload flow | camera intake, capture records, Storage upload | Depends on place detail and existing Storage config |
 | Ready | P1 | Build review queue and confirmation | review list, candidate edits, confirmed item writes | Depends on capture flow and worker stub |
 | Ready | P1 | Build deterministic search and browse | search results, browse by place, item detail | Can start against shared item contracts |
@@ -52,15 +52,15 @@ Known constraints:
 
 ## Suggested execution order
 
-1. Finish the WS4 household bootstrap path and verify it against the current Firebase rules.
-2. Start WS5 place hierarchy in `prototype/mobile-web/`.
-3. Start WS6 capture upload against the existing Firebase Storage structure.
-4. Start WS7 and WS8 once place detail and capture writes exist.
+1. Finish WS5 with place detail, rename, and place-level empty states.
+2. Start WS6 capture upload against the existing Firebase Storage structure.
+3. Start WS7 with the current capture-analysis stub and Firestore writeback path.
+4. Start WS8 once capture writes can reach `review_needed`.
 
 ## Parallelization notes
 
 Safe to parallelize:
-- WS5 place hierarchy UI
+- WS5 place detail and rename flow
 - WS7 async analysis worker stub refinement
 - WS11 QA, fixtures, and emulator workflow
 
@@ -72,6 +72,7 @@ Better done after product flows are stable:
 
 - `pnpm install` works from the repository root.
 - the mobile web shell builds and typechecks.
+- the place hierarchy supports create and browse flows against Firestore.
 - Firebase rules, indexes, and config exist in one predictable location.
 - shared contracts exist for the main product entities.
-- another agent can start WS5 or WS6 without re-deciding the project baseline.
+- another agent can start WS6 or WS7 without re-deciding the project baseline.

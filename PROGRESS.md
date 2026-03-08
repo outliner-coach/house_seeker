@@ -21,7 +21,8 @@ Status:
 - `pnpm` workspace baseline is now created
 - mobile web shell and sign-in flow now build locally
 - shared schemas, Firebase rules, and functions stub are now wired
-- automatic household bootstrap is now the active implementation focus
+- automatic household bootstrap is now wired
+- Firestore-backed place creation and hierarchy browsing are now in progress
 
 Current repository contents:
 - `.gitignore`
@@ -68,7 +69,7 @@ Current repository contents:
 - `PROGRESS.md`
 
 Recommended next task:
-- finish the household bootstrap path and then start the place hierarchy flow in `prototype/mobile-web/src/features/places/`
+- finish place detail and rename, then start capture upload from place screens
 
 ## Work log
 
@@ -233,6 +234,27 @@ Open follow-up:
 - complete household bootstrap and replace more shell-mode data with Firestore-backed reads
 - build place CRUD and path browsing next
 - document emulator and environment setup for other agents
+
+### 2026-03-08 - Place hierarchy baseline wired
+
+Completed:
+- added a shared place data hook backed by Firestore queries and mutations
+- implemented place creation with parent selection, path preview, and activity logging
+- implemented hierarchy browsing with root and child-place navigation
+- connected the home screen place counts to live Firestore data when Firebase config is present
+- kept shell-mode fallback cards for environments without Firebase config
+- re-ran `pnpm typecheck`, `pnpm lint:web`, and `pnpm build`
+
+Outputs:
+- `prototype/mobile-web/src/features/places/use-household-places.ts`
+- updated `prototype/mobile-web/src/features/places/places-page.tsx`
+- updated `prototype/mobile-web/src/features/home/home-page.tsx`
+- updated `prototype/mobile-web/src/styles/global.css`
+
+Open follow-up:
+- add rename and dedicated place detail behavior
+- start capture upload from the selected place
+- reduce the large frontend bundle once core flows are in place
 
 ### 2026-03-08 - Git initialized and prepared for publishing
 
