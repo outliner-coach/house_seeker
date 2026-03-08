@@ -18,6 +18,25 @@ import { getFirebaseServices } from '@/lib/firebase/client'
 import { ensureLocalHousehold } from '@/lib/local/local-store'
 import { HouseholdContext, type HouseholdContextValue } from './household-context-store'
 
+function normalizeHouseholdError(error: unknown) {
+  if (error && typeof error === 'object' && 'code' in error && typeof error.code === 'string') {
+    switch (error.code) {
+      case 'permission-denied':
+        return 'error.firestore.permissionDenied'
+      case 'unauthenticated':
+        return 'error.firestore.unauthenticated'
+      default:
+        break
+    }
+  }
+
+  if (error instanceof Error) {
+    return error.message
+  }
+
+  return 'error.household.syncFailed'
+}
+
 function buildDefaultHouseholdName(displayName: string | null, email: string | null) {
   if (displayName) {
     return `${displayName} household`
@@ -182,7 +201,7 @@ export function HouseholdProvider({ children }: PropsWithChildren) {
         setState((previous) => ({
           ...previous,
           bootstrapMode: 'unavailable',
-          error: error instanceof Error ? error.message : 'error.household.syncFailed',
+          error: normalizeHouseholdError(error),
           household: null,
           householdId: null,
           loading: false,

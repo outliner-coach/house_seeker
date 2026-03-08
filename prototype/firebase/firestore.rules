@@ -14,15 +14,20 @@ service cloud.firestore {
       return isSignedIn() && exists(memberDocPath(householdId));
     }
 
+    // Collection group queries need an explicit collection-group match in
+    // rules version 2. Household bootstrap uses:
+    // collectionGroup('members').where('userId', '==', request.auth.uid)
+    match /{path=**}/members/{memberId} {
+      allow get: if isSignedIn() && resource.data.userId == request.auth.uid;
+      allow list: if isSignedIn() && resource.data.userId == request.auth.uid;
+    }
+
     match /households/{householdId} {
       allow create: if isSignedIn() && request.resource.data.createdByUserId == request.auth.uid;
       allow get, update: if isHouseholdMember(householdId);
       allow list, delete: if false;
 
       match /members/{memberId} {
-        // Bootstrap needs to query the signed-in user's own membership record
-        // before it knows the household id. Household members can still read
-        // the full members subcollection after joining.
         allow get: if isSignedIn()
           && (memberId == request.auth.uid || isHouseholdMember(householdId));
         allow list: if isSignedIn()
