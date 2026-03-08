@@ -13,6 +13,7 @@ Put these here:
 Current files:
 - `commands.md`
 - `skills.md`
+- `implementation-plan.md`
 
 Notes:
 - keep this folder focused on execution workflow, not product or architecture content

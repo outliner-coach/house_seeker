@@ -15,6 +15,7 @@ Put these here:
 Planned files:
 - `ai-roles.md`
 - `system-design.md`
+- `privacy-threat-notes.md`
 
 Notes:
 - architecture should follow product decisions, not replace them

@@ -11,8 +11,8 @@ Core idea:
 - the system extracts visible items, stores them under a location hierarchy, and later answers questions like `Where is the glue gun?`
 
 Current phase:
-- discovery, product definition, and planning
-- no application code or prototype has been created yet
+- implementation planning completed
+- prototype scaffolding can now begin in parallel workstreams
 
 ## Product scope
 
@@ -41,11 +41,20 @@ Out of scope for now:
 - `workflow/README.md`: workflow-documentation folder guide
 - `workflow/commands.md`: shared shell commands for recurring tasks
 - `workflow/skills.md`: relevant installed skills and selection notes
+- `workflow/implementation-plan.md`: detailed parallel execution plan for implementation
 - `product/README.md`: product-documentation folder guide
 - `product/confirmed-decisions.md`: confirmed product constraints and remaining open questions
+- `product/mvp-spec.md`: MVP scope and acceptance criteria
+- `product/data-model.md`: product entities and relationships
+- `product/screen-map.md`: mobile screen hierarchy and navigation
 - `architecture/README.md`: technical-design folder guide
 - `architecture/ai-roles.md`: AI responsibilities and non-goals
+- `architecture/system-design.md`: Firebase-based technical architecture
 - `prototype/README.md`: prototype-code folder guide
+- `prototype/mobile-web/README.md`: frontend prototype lane
+- `prototype/functions/README.md`: backend worker lane
+- `prototype/shared/README.md`: shared contract lane
+- `prototype/firebase/README.md`: Firebase config lane
 - `assets/README.md`: assets folder guide
 - `PLAN.md`: current task queue and execution order
 - `PROGRESS.md`: dated work log and current snapshot
@@ -104,7 +113,10 @@ Recommended parallel work lanes:
 - `workflow/`: commands, skills, and collaboration process
 - `product/`: user flows, requirements, information architecture
 - `architecture/`: data model, AI pipeline, system design
-- `prototype/`: UI, backend scaffold, or experiments after planning is stable
+- `prototype/mobile-web/`: frontend application
+- `prototype/functions/`: async workers and trusted backend logic
+- `prototype/shared/`: shared schemas and constants
+- `prototype/firebase/`: rules, indexes, emulator, and Firebase config
 
 ## Deliverable standards
 

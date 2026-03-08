@@ -15,6 +15,9 @@ Status:
 - core implementation decisions are now recorded
 - default policy choices and AI roles are now documented
 - core user flows are now documented
+- MVP scope, data model, screen map, and system design are now documented
+- detailed implementation workstreams are now documented
+- prototype lanes for parallel agents are now defined
 
 Current repository contents:
 - `.gitignore`
@@ -24,19 +27,28 @@ Current repository contents:
 - `workflow/README.md`
 - `workflow/commands.md`
 - `workflow/skills.md`
+- `workflow/implementation-plan.md`
 - `product/README.md`
 - `product/confirmed-decisions.md`
 - `product/user-flows.md`
+- `product/mvp-spec.md`
+- `product/data-model.md`
+- `product/screen-map.md`
 - `architecture/README.md`
 - `architecture/ai-roles.md`
+- `architecture/system-design.md`
 - `prototype/README.md`
+- `prototype/mobile-web/README.md`
+- `prototype/functions/README.md`
+- `prototype/shared/README.md`
+- `prototype/firebase/README.md`
 - `assets/README.md`
 - `AGENTS.md`
 - `PLAN.md`
 - `PROGRESS.md`
 
 Recommended next task:
-- create `product/mvp-spec.md` from the confirmed decisions and user flows
+- start WS1, WS2, and WS3 from `workflow/implementation-plan.md`
 
 ## Work log
 
@@ -141,6 +153,42 @@ Outputs:
 
 Open follow-up:
 - derive `product/mvp-spec.md` and `product/data-model.md` from the documented flows
+
+### 2026-03-08 - MVP scope, data model, screens, and system design documented
+
+Completed:
+- created `product/mvp-spec.md`
+- created `product/data-model.md`
+- created `product/screen-map.md`
+- created `architecture/system-design.md`
+- cross-checked the Firebase-based system design direction against official Firebase documentation
+
+Outputs:
+- `product/mvp-spec.md`
+- `product/data-model.md`
+- `product/screen-map.md`
+- `architecture/system-design.md`
+
+Open follow-up:
+- start the first prototype with the place hierarchy and capture-review loop
+
+### 2026-03-08 - Detailed implementation plan and parallel lanes defined
+
+Completed:
+- created `workflow/implementation-plan.md`
+- split the prototype workspace into frontend, functions, shared, and Firebase lanes
+- documented workstream ownership, dependencies, milestones, and handoff expectations
+- updated collaboration docs to treat the project as ready for parallel prototype work
+
+Outputs:
+- `workflow/implementation-plan.md`
+- `prototype/mobile-web/README.md`
+- `prototype/functions/README.md`
+- `prototype/shared/README.md`
+- `prototype/firebase/README.md`
+
+Open follow-up:
+- start WS1, WS2, and WS3 in parallel and keep file ownership strict
 
 ### 2026-03-08 - Git initialized and prepared for publishing
 

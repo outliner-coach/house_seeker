@@ -15,7 +15,7 @@ Define and prepare a buildable product for the household item-location service b
 ## Current phase
 
 Phase:
-- product discovery and structured planning
+- implementation planning and parallel workstream setup
 
 Known constraints:
 - stay focused on product and UX
@@ -34,30 +34,37 @@ Known constraints:
 | Completed | P0 | Resolve default policy choices and define AI roles | `product/confirmed-decisions.md`, `architecture/ai-roles.md` | Captures agreed defaults before system design |
 | Completed | P1 | Turn benchmark findings into target user flows | `product/user-flows.md` | Covers setup, capture, review, search, browse, move, and recapture |
 | Completed | P0 | Initialize Git and publish the planning workspace | `.gitignore`, Git remote, initial push | Remote: `outliner-coach/house_seeker` |
-| Ready | P1 | Define MVP functional spec | `product/mvp-spec.md` | Keep centered on P1 benchmark features |
-| Ready | P1 | Define core entities and information architecture | `product/data-model.md` | Include place hierarchy, item records, freshness, and activity |
-| Backlog | P2 | Draft screen map and navigation model | `product/screen-map.md` | Mobile-first unless later changed |
-| Backlog | P2 | Draft system design for image analysis and retrieval | `architecture/system-design.md` | Should follow product spec, not precede it |
+| Completed | P1 | Define MVP functional spec | `product/mvp-spec.md` | Buildable scope, states, and acceptance criteria documented |
+| Completed | P1 | Define core entities and information architecture | `product/data-model.md` | Product entities, relationships, and status model documented |
+| Completed | P2 | Draft screen map and navigation model | `product/screen-map.md` | Mobile-first screen hierarchy and navigation documented |
+| Completed | P2 | Draft system design for image analysis and retrieval | `architecture/system-design.md` | Firebase-based architecture and async analysis flow documented |
+| Completed | P1 | Define detailed implementation workstreams | `workflow/implementation-plan.md` | Parallel execution plan and ownership rules documented |
+| Completed | P1 | Define prototype subfolder ownership | `prototype/mobile-web/`, `prototype/functions/`, `prototype/shared/`, `prototype/firebase/` | Parallel lanes created for agents |
 | Backlog | P2 | Draft privacy and threat boundaries | `architecture/privacy-threat-notes.md` | Use installed `security-threat-model` after system design exists |
-| Backlog | P3 | Choose implementation target and scaffold first prototype | repo structure and starter app | Start only after MVP scope is stable |
+| Ready | P1 | Scaffold base workspace and shared contracts | prototype starter files | Start WS1, WS2, WS3 from `workflow/implementation-plan.md` |
+| Ready | P1 | Build auth shell and household bootstrap | frontend auth flow | Start after Firebase client initialization exists |
+| Backlog | P2 | Build place hierarchy | place CRUD and path browsing | Depends on shared contracts and app shell |
+| Backlog | P2 | Build capture-upload-review loop | capture, task enqueue, review queue | Depends on place detail and worker stub |
+| Backlog | P2 | Build search, browse, and item detail | retrieval flows | Depends on confirmed item writes |
 
 ## Suggested execution order
 
-1. Create `product/mvp-spec.md`.
-2. Create `product/data-model.md`.
-3. Create `product/screen-map.md`.
-4. Create `architecture/system-design.md`.
-5. Decide prototype target and start implementation.
+1. Draft `architecture/privacy-threat-notes.md` if security review is needed before coding.
+2. Start WS1, WS2, and WS3 in parallel from `workflow/implementation-plan.md`.
+3. Start WS4 once Firebase client initialization exists.
+4. Implement the place hierarchy before the capture-review loop.
 
 ## Parallelization notes
 
 Safe to parallelize:
-- `product/data-model.md`
+- WS1 Foundation and scaffolding
+- WS2 Shared domain contracts
+- WS3 Firebase project configuration
+- WS4 App shell and auth once Firebase client init exists
 
 Better done after product flows are stable:
-- `product/mvp-spec.md`
-- `product/screen-map.md`
-- `architecture/system-design.md`
+- privacy and threat notes
+- async analysis worker implementation
 
 ## Definition of done for this phase
 

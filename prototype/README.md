@@ -12,10 +12,12 @@ Put these here:
 - proof-of-concept code for image analysis or search
 
 Suggested future subfolders:
-- `mobile/`
-- `web/`
-- `backend/`
+- `mobile-web/`
+- `functions/`
+- `shared/`
+- `firebase/`
 
 Notes:
 - do not mix prototype code with planning documents
-- choose concrete subfolders only after the target platform is decided
+- the target platform is now mobile web on Firebase
+- use `workflow/implementation-plan.md` for execution order and workstream ownership
