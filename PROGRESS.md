@@ -29,6 +29,7 @@ Status:
 - Firebase Hosting deployment is now live on the `house--seeker` project
 - Korean-first UI with English switching is now wired across the mobile web shell
 - production Firebase web config is now wired into the mobile web build
+- the bilingual production build is now deployed to `https://house--seeker.web.app`
 
 Current repository contents:
 - `.gitignore`
@@ -291,6 +292,21 @@ Outputs:
 
 Open follow-up:
 - enable the Firestore API for `house--seeker` so authenticated bootstrap and data flows can run against the live backend
+
+### 2026-03-08 - Bilingual production build committed and deployed
+
+Completed:
+- committed the Korean-first bilingual UI work to Git
+- pushed the changes to `origin/main`
+- deployed the current production build to Firebase Hosting
+- verified the deployed app returns `200`, serves `lang=\"ko\"`, renders Korean sign-in copy by default, and switches to English in-browser
+
+Outputs:
+- Git commit `783cbb0`
+- live app at `https://house--seeker.web.app`
+
+Open follow-up:
+- enable the Firestore API in the `house--seeker` project before validating authenticated live flows end to end
 - reduce the large frontend bundle once core flows are in place
 
 ### 2026-03-08 - Capture upload baseline wired
