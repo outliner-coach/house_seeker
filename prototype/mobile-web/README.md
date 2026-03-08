@@ -26,6 +26,7 @@ Implemented so far:
 - Firebase client initialization from `VITE_FIREBASE_*`
 - household bootstrap wiring is active
 - Firestore-backed place creation and hierarchy browsing are active
+- selected-place capture upload is active
 
 Useful commands:
 - `pnpm dev:web`

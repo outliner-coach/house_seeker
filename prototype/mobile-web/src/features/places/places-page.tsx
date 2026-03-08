@@ -1,5 +1,6 @@
 import { placeTypeValues, type PlaceRecord, type PlaceType } from '@house-seeker/shared'
-import { useMemo, useState } from 'react'
+import { useMemo, useState, type ChangeEvent, type FormEvent } from 'react'
+import { usePlaceCaptures } from '@/features/captures/use-place-captures'
 import { placeSummaries } from '@/features/household/mock-data'
 import { useHouseholdPlaces } from './use-household-places'
 
@@ -46,6 +47,7 @@ export function PlacesPage() {
     placesLoading,
   } = useHouseholdPlaces()
   const [draft, setDraft] = useState<PlaceDraft>(initialDraft)
+  const [captureMessage, setCaptureMessage] = useState('')
   const [formMessage, setFormMessage] = useState('')
   const [selectedPlaceId, setSelectedPlaceId] = useState<string | null>(null)
   const [showForm, setShowForm] = useState(false)
@@ -66,6 +68,14 @@ export function PlacesPage() {
       ? `${parentPreview.placePath} > ${draft.name.trim()}`
       : draft.name.trim()
     : parentPreview?.placePath ?? 'Root place'
+  const {
+    captures,
+    capturesError,
+    capturesLoading,
+    isUploadingCapture,
+    uploadCapture,
+    uploadCaptureError,
+  } = usePlaceCaptures(selectedPlace)
 
   function openCreateForm(parentPlaceId: string | null) {
     setDraft({
@@ -77,7 +87,26 @@ export function PlacesPage() {
     setShowForm(true)
   }
 
-  async function handleCreatePlace(event: React.FormEvent<HTMLFormElement>) {
+  async function handleCaptureSelection(event: ChangeEvent<HTMLInputElement>) {
+    const file = event.target.files?.[0]
+
+    if (!file) {
+      return
+    }
+
+    setCaptureMessage('')
+
+    try {
+      const capture = await uploadCapture(file)
+      setCaptureMessage(`Uploaded capture ${capture.id} for ${selectedPlace?.placePath ?? 'selected place'}`)
+    } catch (error) {
+      setCaptureMessage(error instanceof Error ? error.message : 'Unable to upload the capture.')
+    } finally {
+      event.target.value = ''
+    }
+  }
+
+  async function handleCreatePlace(event: FormEvent<HTMLFormElement>) {
     event.preventDefault()
     setFormMessage('')
 
@@ -154,8 +183,11 @@ export function PlacesPage() {
         ) : null}
 
         {formMessage ? <div className="notice">{formMessage}</div> : null}
+        {captureMessage ? <div className="notice">{captureMessage}</div> : null}
         {placesError ? <div className="notice">{placesError}</div> : null}
         {createPlaceError ? <div className="notice">{createPlaceError}</div> : null}
+        {capturesError ? <div className="notice">{capturesError}</div> : null}
+        {uploadCaptureError ? <div className="notice">{uploadCaptureError}</div> : null}
       </section>
 
       {showForm ? (
@@ -288,6 +320,58 @@ export function PlacesPage() {
 
       {!isShellMode && !placesLoading && places.length > 0 ? (
         <section className="stack">
+          {selectedPlace ? (
+            <section className="panel stack">
+              <div className="section-heading">
+                <div>
+                  <p className="eyebrow">Capture</p>
+                  <h3>Upload a new photo for {selectedPlace.name}</h3>
+                </div>
+              </div>
+
+              <p className="lede">
+                Use a single-place photo. The upload sets the place to `analysis_pending` until the
+                review flow is wired.
+              </p>
+
+              <label className="stack" htmlFor="place-capture-input">
+                <span>Choose photo</span>
+                <input
+                  accept="image/*"
+                  capture="environment"
+                  id="place-capture-input"
+                  onChange={handleCaptureSelection}
+                  type="file"
+                />
+              </label>
+
+              <div className="actions-row">
+                <button className="secondary-button" disabled={isUploadingCapture} type="button">
+                  {isUploadingCapture ? 'Uploading capture...' : 'Waiting for image selection'}
+                </button>
+              </div>
+
+              {capturesLoading ? <p>Loading captures...</p> : null}
+              {captures.length > 0 ? (
+                <div className="stack">
+                  {captures.map((capture) => (
+                    <article className="list-card" key={capture.id}>
+                      <div className="pill-row">
+                        <span className="pill">{capture.status}</span>
+                        <span className="pill">{capture.photoDeleted ? 'photo deleted' : 'photo stored'}</span>
+                      </div>
+                      <strong>{capture.id}</strong>
+                      <span>{capture.photoStoragePath}</span>
+                      <small>Captured at {capture.capturedAt}</small>
+                    </article>
+                  ))}
+                </div>
+              ) : (
+                <p className="helper-text">No captures yet for this place.</p>
+              )}
+            </section>
+          ) : null}
+
           {visiblePlaces.length === 0 ? (
             <section className="panel stack">
               <p className="eyebrow">No child places</p>

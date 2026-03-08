@@ -43,8 +43,8 @@ Known constraints:
 | Completed | P1 | Define prototype subfolder ownership | `prototype/mobile-web/`, `prototype/functions/`, `prototype/shared/`, `prototype/firebase/` | Parallel lanes created for agents |
 | Completed | P0 | Scaffold implementation workspace baseline | root workspace config, `prototype/mobile-web/`, `prototype/shared/`, `prototype/functions/`, `prototype/firebase/` | `pnpm` workspace, frontend shell, shared schemas, functions stub, and Firebase config now build |
 | Completed | P0 | Finish auth shell and household bootstrap | signed-in shell and automatic household provisioning | Household bootstrap now creates or resolves the member's household |
-| In progress | P1 | Build place hierarchy | place list, create flow, parent selection, and path browsing | Create + browse + nested parent flow are live; rename and place detail still pending |
-| Ready | P1 | Build capture upload flow | camera intake, capture records, Storage upload | Depends on place detail and existing Storage config |
+| In progress | P1 | Build place hierarchy | place list, create flow, parent selection, and path browsing | Create + browse + nested parent flow are live; rename and richer place detail still pending |
+| In progress | P1 | Build capture upload flow | camera intake, capture records, Storage upload | Selected place can now upload one photo to Storage and create a capture record |
 | Ready | P1 | Build review queue and confirmation | review list, candidate edits, confirmed item writes | Depends on capture flow and worker stub |
 | Ready | P1 | Build deterministic search and browse | search results, browse by place, item detail | Can start against shared item contracts |
 | Ready | P1 | Wire emulator and environment setup docs | `.env.example`, README updates, emulator routine | Keep future agent setup friction low |
@@ -52,15 +52,15 @@ Known constraints:
 
 ## Suggested execution order
 
-1. Finish WS5 with place detail, rename, and place-level empty states.
-2. Start WS6 capture upload against the existing Firebase Storage structure.
+1. Finish WS5 with rename and richer place detail behavior.
+2. Finish WS6 by extracting the capture flow out of the places screen into a dedicated place-detail or capture surface.
 3. Start WS7 with the current capture-analysis stub and Firestore writeback path.
-4. Start WS8 once capture writes can reach `review_needed`.
+4. Start WS8 once capture writes can transition into `review_needed`.
 
 ## Parallelization notes
 
 Safe to parallelize:
-- WS5 place detail and rename flow
+- WS5 rename and richer place detail flow
 - WS7 async analysis worker stub refinement
 - WS11 QA, fixtures, and emulator workflow
 

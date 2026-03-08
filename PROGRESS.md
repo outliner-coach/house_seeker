@@ -23,6 +23,7 @@ Status:
 - shared schemas, Firebase rules, and functions stub are now wired
 - automatic household bootstrap is now wired
 - Firestore-backed place creation and hierarchy browsing are now in progress
+- selected-place capture upload is now in progress
 
 Current repository contents:
 - `.gitignore`
@@ -69,7 +70,7 @@ Current repository contents:
 - `PROGRESS.md`
 
 Recommended next task:
-- finish place detail and rename, then start capture upload from place screens
+- finish place detail and rename, then split capture upload into a dedicated capture surface
 
 ## Work log
 
@@ -255,6 +256,24 @@ Open follow-up:
 - add rename and dedicated place detail behavior
 - start capture upload from the selected place
 - reduce the large frontend bundle once core flows are in place
+
+### 2026-03-08 - Capture upload baseline wired
+
+Completed:
+- added a selected-place capture hook backed by Firebase Storage and Firestore writes
+- upload now creates a `capture` record, updates the place status to `analysis_pending`, and logs an activity entry
+- wired a basic file-input capture action into the selected place view
+- listed prior captures for the selected place inside the places screen
+- re-ran `pnpm typecheck`, `pnpm lint:web`, and `pnpm build`
+
+Outputs:
+- `prototype/mobile-web/src/features/captures/use-place-captures.ts`
+- updated `prototype/mobile-web/src/features/places/places-page.tsx`
+
+Open follow-up:
+- move capture UI out of the places list screen into dedicated place detail or capture screens
+- enqueue or simulate analysis work after upload
+- add retry/error handling for partially uploaded captures
 
 ### 2026-03-08 - Git initialized and prepared for publishing
 
