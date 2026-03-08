@@ -9,7 +9,8 @@ Current workspace note:
 - this folder is initialized as a Git repository
 - origin remote should point to `https://github.com/outliner-coach/house_seeker.git`
 - the prototype now uses a root `pnpm` workspace
-- Firebase config lives under `prototype/firebase/`
+- Firebase deploy config now lives at the repository root in `firebase.json` and `.firebaserc`
+- Firebase rules and indexes source files still live under `prototype/firebase/`
 
 ## Workspace setup
 
@@ -197,5 +198,5 @@ sed -n '1,260p' PROGRESS.md
 
 - Use `rg` for search whenever possible.
 - Use `apply_patch` for manual file edits.
-- Replace the placeholder Firebase project id in `prototype/firebase/.firebaserc` before live deployment.
+- The current default Firebase project is `house--seeker`.
 - Firestore and Storage emulators require Java on this machine; use `pnpm dev:web:local` when Java is unavailable.

@@ -19,6 +19,10 @@ Current files:
 - `storage.rules`
 - `firestore.indexes.json`
 
+Deployment note:
+- root-level `.firebaserc` and `firebase.json` are now used for live deploy commands
+- files in this folder remain the source for rules, indexes, and Firebase-specific prototype assets
+
 Key baseline assumptions:
 - replace the placeholder project id in `.firebaserc` before live deployment
 - household membership documents live at `households/{householdId}/members/{uid}`

@@ -11,10 +11,10 @@
     "lint:web": "pnpm --filter @house-seeker/mobile-web lint",
     "typecheck": "pnpm -r typecheck",
     "build": "pnpm --filter @house-seeker/shared build && pnpm --filter @house-seeker/mobile-web build && pnpm --filter @house-seeker/functions build",
-    "emulators": "firebase emulators:start --config prototype/firebase/firebase.json",
+    "emulators": "firebase emulators:start --config firebase.json",
     "e2e:local": "node prototype/mobile-web/e2e/local-smoke.mjs",
-    "firebase:deploy:rules": "firebase deploy --only firestore:rules,storage --config prototype/firebase/firebase.json",
-    "firebase:deploy:hosting": "firebase deploy --only hosting --config prototype/firebase/firebase.json"
+    "firebase:deploy:rules": "firebase deploy --only firestore:rules,storage --config firebase.json",
+    "firebase:deploy:hosting": "firebase deploy --only hosting --config firebase.json"
   },
   "devDependencies": {
     "firebase-tools": "^15.5.1",

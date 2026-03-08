@@ -26,6 +26,7 @@ Status:
 - selected-place capture upload is now in progress
 - local browser mode is now available for testing without Firebase setup
 - smoke e2e now passes against the local mode dev server
+- Firebase Hosting deployment is now live on the `house--seeker` project
 
 Current repository contents:
 - `.gitignore`
@@ -304,6 +305,28 @@ Verified commands:
 Open follow-up:
 - build the review queue and stub analysis transition on top of the now-tested upload flow
 - reduce the frontend bundle size once the core slice is stable
+
+### 2026-03-08 - Firebase Hosting deployment published
+
+Completed:
+- created the Firebase Web App `house-seeker-web` in project `house--seeker`
+- added root-level Firebase deploy config so Hosting can deploy assets inside the repository tree
+- built the current app in local-mode for stable hosted preview behavior
+- deployed the current build to Firebase Hosting
+- ran the smoke e2e against the live hosting URL
+
+Outputs:
+- live site: `https://house--seeker.web.app`
+- root Firebase config: `.firebaserc`, `firebase.json`
+- updated deploy scripts in `package.json`
+
+Verified:
+- `firebase deploy --only hosting --project house--seeker --config firebase.json`
+- `BASE_URL=https://house--seeker.web.app pnpm e2e:local`
+
+Open follow-up:
+- enable Firestore/Auth/Storage in `house--seeker` before switching the hosted build from local mode to live Firebase mode
+- choose Firestore region and create the database intentionally before deploying rules and real backend flows
 
 ### 2026-03-08 - Git initialized and prepared for publishing
 

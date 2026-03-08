@@ -46,6 +46,7 @@ Known constraints:
 | In progress | P1 | Build place hierarchy | place list, create flow, parent selection, and path browsing | Create + browse + nested parent flow are live; rename and richer place detail still pending |
 | In progress | P1 | Build capture upload flow | camera intake, capture records, Storage upload | Selected place can now upload one photo to Storage and create a capture record |
 | Completed | P1 | Establish a local test and smoke path | local mode login, browser-local data path, and reproducible e2e | `pnpm dev:web:local` and `pnpm e2e:local` now work on this machine |
+| Completed | P1 | Publish the hosted prototype baseline | Firebase Hosting deploy for the current build | Deployed to `https://house--seeker.web.app` |
 | Ready | P1 | Build review queue and confirmation | review list, candidate edits, confirmed item writes | Depends on capture flow and worker stub |
 | Ready | P1 | Build deterministic search and browse | search results, browse by place, item detail | Can start against shared item contracts |
 | In progress | P1 | Wire emulator and environment setup docs | `.env.example`, README updates, emulator routine | Local mode is documented; Firebase emulators still need Java on this machine |

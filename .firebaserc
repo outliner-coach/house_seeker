@@ -1,0 +1,15 @@
+{
+  "projects": {
+    "default": "house--seeker"
+  },
+  "targets": {
+    "house--seeker": {
+      "hosting": {
+        "default": [
+          "house--seeker"
+        ]
+      }
+    }
+  },
+  "etags": {}
+}
