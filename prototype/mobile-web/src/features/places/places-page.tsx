@@ -2,6 +2,7 @@ import { placeTypeValues, type PlaceRecord, type PlaceType } from '@house-seeker
 import { useMemo, useState, type ChangeEvent, type FormEvent } from 'react'
 import { usePlaceCaptures } from '@/features/captures/use-place-captures'
 import { placeSummaries } from '@/features/household/mock-data'
+import { useLocale } from '@/features/i18n/use-locale'
 import { useHouseholdPlaces } from './use-household-places'
 
 type PlaceDraft = {
@@ -37,6 +38,7 @@ function findPlaceChain(placesById: Map<string, PlaceRecord>, selectedPlaceId: s
 }
 
 export function PlacesPage() {
+  const { formatError, t } = useLocale()
   const {
     createPlace,
     createPlaceError,
@@ -67,7 +69,7 @@ export function PlacesPage() {
     ? parentPreview
       ? `${parentPreview.placePath} > ${draft.name.trim()}`
       : draft.name.trim()
-    : parentPreview?.placePath ?? 'Root place'
+    : parentPreview?.placePath ?? t('places.headingRoot')
   const {
     captures,
     capturesError,
@@ -98,9 +100,14 @@ export function PlacesPage() {
 
     try {
       const capture = await uploadCapture(file)
-      setCaptureMessage(`Uploaded capture ${capture.id} for ${selectedPlace?.placePath ?? 'selected place'}`)
+      setCaptureMessage(
+        t('places.captureUploaded', {
+          id: capture.id,
+          path: selectedPlace?.placePath ?? t('places.headingRoot'),
+        }),
+      )
     } catch (error) {
-      setCaptureMessage(error instanceof Error ? error.message : 'Unable to upload the capture.')
+      setCaptureMessage(formatError(error, 'error.capture.uploadUnavailable'))
     } finally {
       event.target.value = ''
     }
@@ -116,12 +123,16 @@ export function PlacesPage() {
         parentPlaceId: draft.parentPlaceId || null,
         type: draft.type,
       })
-      setSelectedPlaceId(createdPlace.parentPlaceId ?? null)
+      setSelectedPlaceId(createdPlace.id)
       setDraft(initialDraft)
       setShowForm(false)
-      setFormMessage(`Created ${createdPlace.placePath}`)
+      setFormMessage(
+        t('places.created', {
+          path: createdPlace.placePath,
+        }),
+      )
     } catch (error) {
-      setFormMessage(error instanceof Error ? error.message : 'Unable to create the place.')
+      setFormMessage(formatError(error, 'error.place.creationUnavailable'))
     }
   }
 
@@ -130,23 +141,22 @@ export function PlacesPage() {
       <section className="panel stack">
         <div className="section-heading">
           <div>
-            <p className="eyebrow">Places</p>
-            <h2>{selectedPlace ? selectedPlace.name : 'Place hierarchy'}</h2>
+            <p className="eyebrow">{t('places.eyebrow')}</p>
+            <h2 data-testid="selected-place-heading">
+              {selectedPlace ? selectedPlace.name : t('places.headingRoot')}
+            </h2>
           </div>
-          <button onClick={() => openCreateForm(selectedPlaceId)} type="button">
-            Add place
+          <button data-testid="add-place-button" onClick={() => openCreateForm(selectedPlaceId)} type="button">
+            {t('places.addPlace')}
           </button>
         </div>
 
-        <p className="lede">
-          Build the household location tree first. Fixed spaces and nested containers both live in
-          the same hierarchy.
-        </p>
+        <p className="lede">{t('places.description')}</p>
 
         {currentChain.length > 0 ? (
           <div className="pill-row">
             <button className="secondary-button" onClick={() => setSelectedPlaceId(null)} type="button">
-              All places
+              {t('places.allPlaces')}
             </button>
             {currentChain.map((place) => (
               <button
@@ -164,45 +174,52 @@ export function PlacesPage() {
         {selectedPlace ? (
           <div className="details-grid">
             <div>
-              <dt>Path</dt>
+              <dt>{t('places.path')}</dt>
               <dd>{selectedPlace.placePath}</dd>
             </div>
             <div>
-              <dt>Child places</dt>
+              <dt>{t('places.childPlaces')}</dt>
               <dd>{countChildren(places, selectedPlace.id)}</dd>
             </div>
             <div>
-              <dt>Status</dt>
-              <dd>{selectedPlace.status}</dd>
+              <dt>{t('places.status')}</dt>
+              <dd>{t(`enum.placeStatus.${selectedPlace.status}`)}</dd>
             </div>
             <div>
-              <dt>Last verified</dt>
-              <dd>{selectedPlace.lastVerifiedAt ?? 'Not captured yet'}</dd>
+              <dt>{t('places.lastVerified')}</dt>
+              <dd>{selectedPlace.lastVerifiedAt ?? t('places.notCapturedYet')}</dd>
             </div>
           </div>
         ) : null}
 
         {formMessage ? <div className="notice">{formMessage}</div> : null}
         {captureMessage ? <div className="notice">{captureMessage}</div> : null}
-        {placesError ? <div className="notice">{placesError}</div> : null}
-        {createPlaceError ? <div className="notice">{createPlaceError}</div> : null}
-        {capturesError ? <div className="notice">{capturesError}</div> : null}
-        {uploadCaptureError ? <div className="notice">{uploadCaptureError}</div> : null}
+        {placesError ? <div className="notice">{formatError(new Error(placesError), 'error.place.creationUnavailable')}</div> : null}
+        {createPlaceError ? (
+          <div className="notice">{formatError(new Error(createPlaceError), 'error.place.creationUnavailable')}</div>
+        ) : null}
+        {capturesError ? (
+          <div className="notice">{formatError(new Error(capturesError), 'error.capture.uploadUnavailable')}</div>
+        ) : null}
+        {uploadCaptureError ? (
+          <div className="notice">{formatError(new Error(uploadCaptureError), 'error.capture.uploadUnavailable')}</div>
+        ) : null}
       </section>
 
       {showForm ? (
         <section className="panel stack">
           <div className="section-heading">
-            <h3>Create place</h3>
+            <h3>{t('places.createForm')}</h3>
             <button className="secondary-button" onClick={() => setShowForm(false)} type="button">
-              Close
+              {t('places.close')}
             </button>
           </div>
 
           <form className="stack" onSubmit={handleCreatePlace}>
             <label className="stack" htmlFor="place-name">
-              <span>Place name</span>
+              <span>{t('places.form.name')}</span>
               <input
+                data-testid="place-name-input"
                 id="place-name"
                 onChange={(event) =>
                   setDraft((current) => ({
@@ -210,13 +227,13 @@ export function PlacesPage() {
                     name: event.target.value,
                   }))
                 }
-                placeholder="White cabinet"
+                placeholder={t('places.form.placeholder')}
                 value={draft.name}
               />
             </label>
 
             <label className="stack" htmlFor="place-type">
-              <span>Place type</span>
+              <span>{t('places.form.type')}</span>
               <select
                 id="place-type"
                 onChange={(event) =>
@@ -229,14 +246,14 @@ export function PlacesPage() {
               >
                 {placeTypeValues.map((value) => (
                   <option key={value} value={value}>
-                    {value}
+                    {t(`enum.placeType.${value}`)}
                   </option>
                 ))}
               </select>
             </label>
 
             <label className="stack" htmlFor="parent-place">
-              <span>Parent place</span>
+              <span>{t('places.form.parent')}</span>
               <select
                 id="parent-place"
                 onChange={(event) =>
@@ -247,7 +264,7 @@ export function PlacesPage() {
                 }
                 value={draft.parentPlaceId}
               >
-                <option value="">No parent (root place)</option>
+                <option value="">{t('places.form.noParent')}</option>
                 {places.map((place) => (
                   <option key={place.id} value={place.id}>
                     {place.placePath}
@@ -257,20 +274,24 @@ export function PlacesPage() {
             </label>
 
             <div className="panel stack inset-panel">
-              <p className="eyebrow">Path preview</p>
+              <p className="eyebrow">{t('places.form.pathPreview')}</p>
               <strong>{nextPathPreview}</strong>
             </div>
 
             <div className="actions-row">
-              <button disabled={isCreatingPlace || draft.name.trim().length === 0} type="submit">
-                {isCreatingPlace ? 'Saving...' : 'Create place'}
+              <button
+                data-testid="create-place-submit"
+                disabled={isCreatingPlace || draft.name.trim().length === 0}
+                type="submit"
+              >
+                {isCreatingPlace ? t('places.form.saving') : t('places.create')}
               </button>
               <button
                 className="secondary-button"
                 onClick={() => openCreateForm(selectedPlaceId)}
                 type="button"
               >
-                Reset
+                {t('places.form.reset')}
               </button>
             </div>
           </form>
@@ -279,16 +300,14 @@ export function PlacesPage() {
 
       {isShellMode ? (
         <section className="panel stack">
-          <p className="eyebrow">Shell mode</p>
-          <h3>Firebase config missing</h3>
-          <p className="lede">
-            The live hierarchy is unavailable, so the page is showing placeholder place cards.
-          </p>
+          <p className="eyebrow">{t('places.shellMode')}</p>
+          <h3>{t('places.shellModeHeading')}</h3>
+          <p className="lede">{t('places.firstCardDescription')}</p>
           {placeSummaries.map((place) => (
             <article className="list-card" key={place.id}>
               <div className="pill-row">
-                <span className="pill">{place.status}</span>
-                <span className="pill">{place.freshness}</span>
+                <span className="pill">{t(`enum.placeStatus.${place.status}`)}</span>
+                <span className="pill">{t(`enum.freshnessStatus.${place.freshness}`)}</span>
               </div>
               <strong>{place.name}</strong>
               <span>{place.path}</span>
@@ -299,20 +318,18 @@ export function PlacesPage() {
 
       {!isShellMode && placesLoading ? (
         <section className="panel">
-          <p>Loading places...</p>
+          <p>{t('places.loading')}</p>
         </section>
       ) : null}
 
       {!isShellMode && !placesLoading && places.length === 0 ? (
         <section className="panel stack">
-          <p className="eyebrow">Empty state</p>
-          <h3>Add the first storage place</h3>
-          <p className="lede">
-            Start with rooms, cabinets, drawers, boxes, or bags. You can nest containers later.
-          </p>
+          <p className="eyebrow">{t('places.emptyEyebrow')}</p>
+          <h3>{t('places.emptyHeading')}</h3>
+          <p className="lede">{t('places.emptyDescription')}</p>
           <div className="actions-row">
-            <button onClick={() => openCreateForm(null)} type="button">
-              Create first place
+            <button data-testid="create-first-place" onClick={() => openCreateForm(null)} type="button">
+              {t('places.addFirst')}
             </button>
           </div>
         </section>
@@ -321,24 +338,22 @@ export function PlacesPage() {
       {!isShellMode && !placesLoading && places.length > 0 ? (
         <section className="stack">
           {selectedPlace ? (
-            <section className="panel stack">
+            <section className="panel stack" data-testid="capture-section">
               <div className="section-heading">
                 <div>
-                  <p className="eyebrow">Capture</p>
-                  <h3>Upload a new photo for {selectedPlace.name}</h3>
+                  <p className="eyebrow">{t('places.captureEyebrow')}</p>
+                  <h3>{t('places.captureUploadFor', { name: selectedPlace.name })}</h3>
                 </div>
               </div>
 
-              <p className="lede">
-                Use a single-place photo. The upload sets the place to `analysis_pending` until the
-                review flow is wired.
-              </p>
+              <p className="lede">{t('places.captureDescription')}</p>
 
               <label className="stack" htmlFor="place-capture-input">
-                <span>Choose photo</span>
+                <span>{t('places.captureChoosePhoto')}</span>
                 <input
                   accept="image/*"
                   capture="environment"
+                  data-testid="place-capture-input"
                   id="place-capture-input"
                   onChange={handleCaptureSelection}
                   type="file"
@@ -347,38 +362,45 @@ export function PlacesPage() {
 
               <div className="actions-row">
                 <button className="secondary-button" disabled={isUploadingCapture} type="button">
-                  {isUploadingCapture ? 'Uploading capture...' : 'Waiting for image selection'}
+                  {isUploadingCapture ? t('places.uploadingCapture') : t('places.selectedCaptureStatus')}
                 </button>
               </div>
 
-              {capturesLoading ? <p>Loading captures...</p> : null}
+              {capturesLoading ? <p>{t('places.captureLoading')}</p> : null}
               {captures.length > 0 ? (
                 <div className="stack">
                   {captures.map((capture) => (
-                    <article className="list-card" key={capture.id}>
+                    <article
+                      className="list-card"
+                      data-capture-status={capture.status}
+                      data-testid="capture-card"
+                      key={capture.id}
+                    >
                       <div className="pill-row">
-                        <span className="pill">{capture.status}</span>
-                        <span className="pill">{capture.photoDeleted ? 'photo deleted' : 'photo stored'}</span>
+                        <span className="pill">{t(`enum.captureStatus.${capture.status}`)}</span>
+                        <span className="pill">
+                          {capture.photoDeleted ? t('places.photoDeleted') : t('places.photoStored')}
+                        </span>
                       </div>
                       <strong>{capture.id}</strong>
                       <span>{capture.photoStoragePath}</span>
-                      <small>Captured at {capture.capturedAt}</small>
+                      <small>{t('places.capturedAt', { date: capture.capturedAt })}</small>
                     </article>
                   ))}
                 </div>
               ) : (
-                <p className="helper-text">No captures yet for this place.</p>
+                <p className="helper-text">{t('places.captureNone')}</p>
               )}
             </section>
           ) : null}
 
           {visiblePlaces.length === 0 ? (
             <section className="panel stack">
-              <p className="eyebrow">No child places</p>
-              <h3>{selectedPlace ? 'Add a nested container or sub-place' : 'No root places found'}</h3>
+              <p className="eyebrow">{t('places.noChildPlaces')}</p>
+              <h3>{selectedPlace ? t('places.addNested') : t('places.noRootPlaces')}</h3>
               <div className="actions-row">
                 <button onClick={() => openCreateForm(selectedPlaceId)} type="button">
-                  Add place here
+                  {t('places.addHere')}
                 </button>
                 {selectedPlace ? (
                   <button
@@ -386,7 +408,7 @@ export function PlacesPage() {
                     onClick={() => setSelectedPlaceId(selectedPlace.parentPlaceId)}
                     type="button"
                   >
-                    Go up
+                    {t('places.goUp')}
                   </button>
                 ) : null}
               </div>
@@ -395,19 +417,19 @@ export function PlacesPage() {
             visiblePlaces.map((place) => (
               <article className="panel list-card" key={place.id}>
                 <div className="pill-row">
-                  <span className="pill">{place.type}</span>
-                  <span className="pill">{place.status}</span>
-                  <span className="pill">{place.freshnessStatus}</span>
+                  <span className="pill">{t(`enum.placeType.${place.type}`)}</span>
+                  <span className="pill">{t(`enum.placeStatus.${place.status}`)}</span>
+                  <span className="pill">{t(`enum.freshnessStatus.${place.freshnessStatus}`)}</span>
                 </div>
                 <strong>{place.name}</strong>
                 <span>{place.placePath}</span>
-                <small>{countChildren(places, place.id)} child places</small>
+                <small>{t('places.childPlacesCount', { count: countChildren(places, place.id) })}</small>
                 <div className="actions-row">
-                  <button onClick={() => setSelectedPlaceId(place.id)} type="button">
-                    Open
+                  <button data-testid={`open-place-${place.id}`} onClick={() => setSelectedPlaceId(place.id)} type="button">
+                    {t('places.open')}
                   </button>
                   <button className="secondary-button" onClick={() => openCreateForm(place.id)} type="button">
-                    Add child
+                    {t('places.addChild')}
                   </button>
                 </div>
               </article>

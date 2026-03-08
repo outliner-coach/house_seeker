@@ -27,6 +27,8 @@ Status:
 - local browser mode is now available for testing without Firebase setup
 - smoke e2e now passes against the local mode dev server
 - Firebase Hosting deployment is now live on the `house--seeker` project
+- Korean-first UI with English switching is now wired across the mobile web shell
+- production Firebase web config is now wired into the mobile web build
 
 Current repository contents:
 - `.gitignore`
@@ -258,6 +260,37 @@ Outputs:
 Open follow-up:
 - add rename and dedicated place detail behavior
 - start capture upload from the selected place
+
+### 2026-03-08 - Korean-first bilingual UI wired
+
+Completed:
+- added a locale provider with browser-persisted `ko` and `en` switching
+- localized the sign-in flow, app shell, home, places, browse, review, and settings screens
+- kept Korean as the default locale and updated the HTML root lang accordingly
+- updated the local smoke e2e flow to verify default Korean copy and English switching before continuing with the place and capture flow
+- re-ran `pnpm lint:web`, `pnpm typecheck`, `pnpm build`, and `BASE_URL=http://127.0.0.1:4173 pnpm e2e:local`
+
+Outputs:
+- `prototype/mobile-web/src/features/i18n/`
+- updated mobile web screens, styles, and smoke e2e
+
+Open follow-up:
+- localize review candidates and other sample fixture content where needed
+- consider splitting Firebase-heavy routes to reduce the main bundle size warning
+
+### 2026-03-08 - Production Firebase web config wired for deploy
+
+Completed:
+- fetched the `house--seeker` Firebase Web App SDK config from the Firebase CLI
+- added `prototype/mobile-web/.env.production` so production builds target the live Firebase project without shell-local environment setup
+- rebuilt the workspace using the live production config
+
+Outputs:
+- `prototype/mobile-web/.env.production`
+- updated `prototype/mobile-web/README.md`
+
+Open follow-up:
+- enable the Firestore API for `house--seeker` so authenticated bootstrap and data flows can run against the live backend
 - reduce the large frontend bundle once core flows are in place
 
 ### 2026-03-08 - Capture upload baseline wired

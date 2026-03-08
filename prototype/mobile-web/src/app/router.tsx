@@ -3,36 +3,43 @@ import { SignInPage } from '@/features/auth/sign-in-page'
 import { useAuth } from '@/features/auth/use-auth'
 import { BrowsePage } from '@/features/browse/browse-page'
 import { HomePage } from '@/features/home/home-page'
+import { LocaleSwitcher } from '@/features/i18n/locale-switcher'
+import { useLocale } from '@/features/i18n/use-locale'
 import { PlacesPage } from '@/features/places/places-page'
 import { ReviewPage } from '@/features/review/review-page'
 import { SettingsPage } from '@/features/settings/settings-page'
 import { useHousehold } from '@/features/household/use-household'
 
-const tabs = [
-  { to: '/', label: 'Home', end: true },
-  { to: '/places', label: 'Places' },
-  { to: '/review', label: 'Review' },
-  { to: '/browse', label: 'Browse' },
-  { to: '/settings', label: 'Settings' },
-]
-
 function AppShell() {
+  const { t } = useLocale()
+  const tabs = [
+    { to: '/', label: t('tabs.home'), end: true, testId: 'tab-home' },
+    { to: '/places', label: t('tabs.places'), testId: 'tab-places' },
+    { to: '/review', label: t('tabs.review'), testId: 'tab-review' },
+    { to: '/browse', label: t('tabs.browse'), testId: 'tab-browse' },
+    { to: '/settings', label: t('tabs.settings'), testId: 'tab-settings' },
+  ]
+
   return (
     <div className="app-shell">
       <header className="topbar">
-        <div>
-          <p className="eyebrow">House Seeker</p>
-          <h1>Prototype Shell</h1>
+        <div className="topbar-row">
+          <div>
+            <p className="eyebrow">{t('brand.appName')}</p>
+            <h1>{t('app.prototypeShell')}</h1>
+          </div>
+          <LocaleSwitcher compact />
         </div>
       </header>
       <main className="page-content">
         <Outlet />
       </main>
-      <nav aria-label="Primary" className="bottom-nav">
+      <nav aria-label={t('app.primaryNav')} className="bottom-nav">
         {tabs.map((tab) => (
           <NavLink
             key={tab.to}
             className={({ isActive }) => (isActive ? 'nav-link active' : 'nav-link')}
+            data-testid={tab.testId}
             end={tab.end}
             to={tab.to}
           >
@@ -61,19 +68,20 @@ function AuthenticatedRoutes() {
 
 function HouseholdGate() {
   const { error, loading, refresh } = useHousehold()
+  const { formatError, t } = useLocale()
 
   if (loading) {
-    return <div className="centered-state">Preparing household workspace...</div>
+    return <div className="centered-state">{t('app.prepareHouseholdWorkspace')}</div>
   }
 
   if (error) {
     return (
       <div className="centered-state padded-state">
         <div className="panel stack">
-          <h2>Unable to open the household</h2>
-          <p className="helper-text">{error}</p>
+          <h2>{t('app.unableToOpenHousehold')}</h2>
+          <p className="helper-text">{formatError(new Error(error), 'error.household.syncFailed')}</p>
           <button onClick={refresh} type="button">
-            Retry household bootstrap
+            {t('app.retryHouseholdBootstrap')}
           </button>
         </div>
       </div>
@@ -85,9 +93,10 @@ function HouseholdGate() {
 
 export function AppRouter() {
   const { loading, user } = useAuth()
+  const { t } = useLocale()
 
   if (loading) {
-    return <div className="centered-state">Loading session...</div>
+    return <div className="centered-state">{t('app.loadingSession')}</div>
   }
 
   if (!user) {

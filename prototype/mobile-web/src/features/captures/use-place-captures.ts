@@ -66,7 +66,7 @@ export function usePlaceCaptures(place: PlaceRecord | null) {
   const uploadCapture = useMutation({
     mutationFn: async (file: File) => {
       if (!householdId || !user || !place) {
-        throw new Error('Capture upload is unavailable.')
+        throw new Error('error.capture.uploadUnavailable')
       }
 
       if (services.localMode) {
@@ -79,7 +79,7 @@ export function usePlaceCaptures(place: PlaceRecord | null) {
       }
 
       if (!services.db || !services.storage) {
-        throw new Error('Capture upload is unavailable.')
+        throw new Error('error.capture.uploadUnavailable')
       }
 
       const now = new Date().toISOString()

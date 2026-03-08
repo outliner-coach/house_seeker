@@ -1,4 +1,6 @@
 import { useState } from 'react'
+import { LocaleSwitcher } from '@/features/i18n/locale-switcher'
+import { useLocale } from '@/features/i18n/use-locale'
 import { useAuth } from './use-auth'
 
 export function SignInPage() {
@@ -10,6 +12,7 @@ export function SignInPage() {
     signInForLocalTesting,
     signInWithGoogle,
   } = useAuth()
+  const { formatError, t } = useLocale()
   const [email, setEmail] = useState('')
   const [message, setMessage] = useState('')
   const [pending, setPending] = useState(false)
@@ -21,9 +24,9 @@ export function SignInPage() {
 
     try {
       await sendEmailLink(email)
-      setMessage('Email link sent. Check the mailbox tied to this Firebase project.')
+      setMessage(t('signIn.sentEmail'))
     } catch (error) {
-      setMessage(error instanceof Error ? error.message : 'Unable to send sign-in link.')
+      setMessage(formatError(error, 'signIn.errorSendEmail'))
     } finally {
       setPending(false)
     }
@@ -36,7 +39,7 @@ export function SignInPage() {
     try {
       await signInWithGoogle()
     } catch (error) {
-      setMessage(error instanceof Error ? error.message : 'Unable to sign in with Google.')
+      setMessage(formatError(error, 'signIn.errorGoogle'))
     } finally {
       setPending(false)
     }
@@ -49,7 +52,7 @@ export function SignInPage() {
     try {
       await signInForLocalTesting()
     } catch (error) {
-      setMessage(error instanceof Error ? error.message : 'Unable to sign in locally.')
+      setMessage(formatError(error, 'signIn.errorLocal'))
     } finally {
       setPending(false)
     }
@@ -58,60 +61,57 @@ export function SignInPage() {
   return (
     <div className="auth-page">
       <div className="panel hero-panel">
-        <p className="eyebrow">Shared household memory</p>
-        <h1>House Seeker</h1>
-        <p className="lede">
-          Sign in to start building the shared place tree, capture storage spaces, and review item
-          candidates.
-        </p>
+        <div className="section-heading">
+          <div>
+            <p className="eyebrow">{t('signIn.heroEyebrow')}</p>
+            <h1>{t('brand.appName')}</h1>
+          </div>
+          <LocaleSwitcher compact />
+        </div>
+        <p className="lede">{t('signIn.lede')}</p>
         {!appConfigured ? (
-          <div className="notice">
-            Firebase environment variables are missing. Add them before testing live auth.
-          </div>
+          <div className="notice">{t('signIn.missingConfig')}</div>
         ) : null}
-        {localMode ? (
-          <div className="notice">
-            Local mode is enabled. Sign in uses browser-local test data instead of Firebase.
-          </div>
-        ) : null}
-        {emulatorMode ? (
-          <div className="notice">
-            Emulator mode is enabled. Local anonymous sign-in is available for smoke testing.
-          </div>
-        ) : null}
+        {localMode ? <div className="notice">{t('signIn.localModeNotice')}</div> : null}
+        {emulatorMode ? <div className="notice">{t('signIn.emulatorModeNotice')}</div> : null}
       </div>
 
       <div className="panel stack">
-        <h2>Sign in</h2>
+        <h2>{t('signIn.heading')}</h2>
         {localMode || emulatorMode ? (
           <>
-            <button disabled={pending || !appConfigured} onClick={handleLocalSignIn} type="button">
-              {localMode ? 'Continue with local test mode' : 'Continue with local emulator'}
+            <button
+              data-testid="local-sign-in"
+              disabled={pending || !appConfigured}
+              onClick={handleLocalSignIn}
+              type="button"
+            >
+              {localMode ? t('signIn.continueLocalMode') : t('signIn.continueLocalEmulator')}
             </button>
-            <div className="divider">or</div>
+            <div className="divider">{t('signIn.or')}</div>
           </>
         ) : null}
         <form className="stack" onSubmit={handleEmailSubmit}>
           <label className="stack" htmlFor="email">
-            <span>Email link</span>
+            <span>{t('signIn.emailLink')}</span>
             <input
               autoComplete="email"
               id="email"
               onChange={(event) => setEmail(event.target.value)}
-              placeholder="parent@example.com"
+              placeholder={t('signIn.emailPlaceholder')}
               type="email"
               value={email}
             />
           </label>
           <button disabled={pending || !appConfigured || email.length === 0} type="submit">
-            Send sign-in link
+            {t('signIn.sendLink')}
           </button>
         </form>
 
-        <div className="divider">or</div>
+        <div className="divider">{t('signIn.or')}</div>
 
         <button disabled={pending || !appConfigured} onClick={handleGoogleSignIn} type="button">
-          Continue with Google
+          {t('signIn.continueGoogle')}
         </button>
 
         {message ? <p className="helper-text">{message}</p> : null}

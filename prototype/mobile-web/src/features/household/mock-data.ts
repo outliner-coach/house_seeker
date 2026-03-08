@@ -12,7 +12,7 @@ export type PendingReview = {
   id: string
   placePath: string
   capturedAt: string
-  confidenceHint: string
+  lowConfidenceCount: number
 }
 
 export type SearchPreview = {
@@ -51,7 +51,7 @@ export const pendingReviews: PendingReview[] = [
     id: 'capture-kitchen-drawer-1',
     placePath: 'Kitchen > Utility Drawer',
     capturedAt: '2026-03-08 18:10',
-    confidenceHint: '2 low-confidence candidates',
+    lowConfidenceCount: 2,
   },
 ]
 

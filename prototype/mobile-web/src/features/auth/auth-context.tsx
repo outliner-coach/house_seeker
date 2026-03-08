@@ -72,7 +72,7 @@ export function AuthProvider({ children }: PropsWithChildren) {
 
   async function signInWithGoogle() {
     if (!services.auth) {
-      throw new Error('Firebase Auth is not configured.')
+      throw new Error('error.auth.notConfigured')
     }
 
     await signInWithPopup(services.auth, new GoogleAuthProvider())
@@ -92,7 +92,7 @@ export function AuthProvider({ children }: PropsWithChildren) {
     }
 
     if (!services.auth || !services.emulatorMode) {
-      throw new Error('Local emulator sign-in is unavailable.')
+      throw new Error('error.auth.localUnavailable')
     }
 
     await signInAnonymously(services.auth)
@@ -100,7 +100,7 @@ export function AuthProvider({ children }: PropsWithChildren) {
 
   async function sendEmailLink(email: string) {
     if (!services.auth || typeof window === 'undefined') {
-      throw new Error('Firebase Auth is not configured.')
+      throw new Error('error.auth.notConfigured')
     }
 
     await sendSignInLinkToEmail(services.auth, email, {

@@ -39,7 +39,7 @@ async function createHouseholdForUser(
   const services = getFirebaseServices()
 
   if (!services.db) {
-    throw new Error('Firestore is not configured.')
+    throw new Error('error.household.firestoreUnavailable')
   }
 
   const now = new Date().toISOString()
@@ -156,7 +156,7 @@ export function HouseholdProvider({ children }: PropsWithChildren) {
         const householdId = memberDocument.ref.parent.parent?.id
 
         if (!householdId) {
-          throw new Error('Membership document is missing its household path.')
+          throw new Error('error.household.missingPath')
         }
 
         const parsedMember = householdMemberSchema.safeParse({
@@ -166,7 +166,7 @@ export function HouseholdProvider({ children }: PropsWithChildren) {
         })
 
         if (!parsedMember.success) {
-          throw new Error('Household membership data is invalid.')
+          throw new Error('error.household.invalidMember')
         }
 
         setState((previous) => ({
@@ -182,7 +182,7 @@ export function HouseholdProvider({ children }: PropsWithChildren) {
         setState((previous) => ({
           ...previous,
           bootstrapMode: 'unavailable',
-          error: error instanceof Error ? error.message : 'Failed to bootstrap the household.',
+          error: error instanceof Error ? error.message : 'error.household.syncFailed',
           household: null,
           householdId: null,
           loading: false,

@@ -19,10 +19,12 @@ Current baseline:
 - `src/lib/firebase/`
 - `src/styles/`
 - `.env.example`
+- `.env.production`
 
 Implemented so far:
 - protected shell with bottom-tab navigation
 - sign-in page with email-link and Google auth actions
+- Korean-first UI copy with English switching support
 - Firebase client initialization from `VITE_FIREBASE_*`
 - household bootstrap wiring is active
 - Firestore-backed place creation and hierarchy browsing are active
@@ -38,3 +40,4 @@ Useful commands:
 
 Coordination note:
 - feature work should follow `workflow/implementation-plan.md`
+- production deploys currently read the checked-in `prototype/mobile-web/.env.production` for the `house--seeker` Firebase web app

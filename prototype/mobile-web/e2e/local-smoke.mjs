@@ -26,23 +26,47 @@ async function main() {
       waitUntil: 'networkidle',
     })
 
-    await page.getByRole('button', { name: 'Continue with local test mode' }).click()
+    await page.getByTestId('local-sign-in').waitFor()
+    const localSignInLabel = await page.getByTestId('local-sign-in').textContent()
+    assertCondition(
+      localSignInLabel?.includes('로컬 테스트 모드로 계속') ?? false,
+      'Default locale should render Korean sign-in copy.',
+    )
+
+    await page.getByTestId('locale-select').selectOption('en')
+    await page.getByTestId('local-sign-in').waitFor({
+      state: 'visible',
+    })
+    const englishLocalSignInLabel = await page.getByTestId('local-sign-in').textContent()
+    assertCondition(
+      englishLocalSignInLabel?.includes('Continue with local test mode') ?? false,
+      'Locale switcher should render English sign-in copy.',
+    )
+
+    await page.getByTestId('local-sign-in').click()
     await page.getByRole('heading', { name: 'Prototype Shell' }).waitFor()
 
-    await page.getByRole('link', { name: 'Places' }).click()
-    await page.getByRole('button', { name: 'Create first place' }).waitFor()
-    await page.getByRole('button', { name: 'Create first place' }).click()
+    await page.getByTestId('tab-settings').click()
+    await page.locator('[data-testid="locale-select"]').first().selectOption('ko')
 
-    await page.locator('#place-name').fill(placeName)
-    await page.getByRole('button', { name: 'Create place' }).click()
-    await page.getByText(`Created ${placeName}`).waitFor()
+    await page.getByTestId('tab-places').click()
+    const placesHeading = await page.getByTestId('selected-place-heading').textContent()
+    assertCondition(
+      placesHeading?.includes('장소 계층') ?? false,
+      'App shell should switch back to Korean after locale change.',
+    )
 
-    await page.getByRole('button', { name: 'Open' }).click()
-    await page.getByRole('heading', { name: `Upload a new photo for ${placeName}` }).waitFor()
+    await page.getByTestId('create-first-place').waitFor()
+    await page.getByTestId('create-first-place').click()
 
-    await page.locator('#place-capture-input').setInputFiles(fixturePath)
-    await page.getByText(/Uploaded capture/).waitFor()
-    await page.getByText('analysis_pending').first().waitFor()
+    await page.getByTestId('place-name-input').fill(placeName)
+    await page.getByTestId('create-place-submit').click()
+    await page.getByRole('heading', { name: placeName, exact: true }).waitFor()
+
+    await page.getByTestId('capture-section').waitFor()
+
+    await page.getByTestId('place-capture-input').setInputFiles(fixturePath)
+    await page.locator('[data-testid="capture-card"][data-capture-status="analysis_pending"]').first().waitFor()
 
     const placeHeading = await page.getByRole('heading', { name: placeName, exact: true }).isVisible()
     assertCondition(placeHeading, 'Selected place heading was not visible after upload.')

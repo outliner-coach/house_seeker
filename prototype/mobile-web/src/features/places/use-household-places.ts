@@ -58,13 +58,13 @@ export function useHouseholdPlaces() {
   const createPlace = useMutation({
     mutationFn: async (input: CreatePlaceInput) => {
       if (!householdId || !user) {
-        throw new Error('Household place creation is unavailable.')
+        throw new Error('error.place.creationUnavailable')
       }
 
       const name = input.name.trim()
 
       if (!name) {
-        throw new Error('Place name is required.')
+        throw new Error('error.place.nameRequired')
       }
 
       const parentPlace = input.parentPlaceId
@@ -72,7 +72,7 @@ export function useHouseholdPlaces() {
         : null
 
       if (input.parentPlaceId && !parentPlace) {
-        throw new Error('Selected parent place could not be found.')
+        throw new Error('error.place.parentMissing')
       }
 
       if (services.localMode) {
@@ -87,7 +87,7 @@ export function useHouseholdPlaces() {
       }
 
       if (!services.db) {
-        throw new Error('Household place creation is unavailable.')
+        throw new Error('error.place.creationUnavailable')
       }
 
       const now = new Date().toISOString()

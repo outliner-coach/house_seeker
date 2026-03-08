@@ -1,11 +1,13 @@
 import { useAuth } from '@/features/auth/use-auth'
 import { useHousehold } from '@/features/household/use-household'
+import { useLocale } from '@/features/i18n/use-locale'
 import { pendingReviews, placeSummaries, searchPreviewResults } from '@/features/household/mock-data'
 import { useHouseholdPlaces } from '@/features/places/use-household-places'
 
 export function HomePage() {
   const { appConfigured, user } = useAuth()
   const { bootstrapMode, householdId, member } = useHousehold()
+  const { t } = useLocale()
   const { isShellMode, places } = useHouseholdPlaces()
   const trackedPlaces = isShellMode ? placeSummaries.length : places.length
   const stalePlaces = isShellMode
@@ -15,44 +17,44 @@ export function HomePage() {
   return (
     <div className="stack">
       <section className="panel stack">
-        <p className="eyebrow">Welcome</p>
-        <h2>{user?.displayName ?? user?.email ?? 'Signed-in household member'}</h2>
-        <input aria-label="Search items" placeholder="Search for glue gun, charger, passport..." />
+        <p className="eyebrow">{t('home.eyebrow')}</p>
+        <h2>{user?.displayName ?? user?.email ?? t('home.signedInMember')}</h2>
+        <input aria-label={t('home.searchAria')} placeholder={t('home.searchPlaceholder')} />
         <div className="stats-grid">
           <div className="stat-card">
             <strong>{pendingReviews.length}</strong>
-            <span>Pending reviews</span>
+            <span>{t('home.pendingReviews')}</span>
           </div>
           <div className="stat-card">
             <strong>{stalePlaces}</strong>
-            <span>Stale places</span>
+            <span>{t('home.stalePlaces')}</span>
           </div>
           <div className="stat-card">
             <strong>{trackedPlaces}</strong>
-            <span>Tracked places</span>
+            <span>{t('home.trackedPlaces')}</span>
           </div>
         </div>
         {!appConfigured ? (
-          <div className="notice">Firebase config missing. The prototype is running in shell mode.</div>
+          <div className="notice">{t('home.missingConfig')}</div>
         ) : null}
         {appConfigured ? (
           <div className="panel stack">
             <div className="section-heading">
-              <h3>Household bootstrap</h3>
-              <span>{bootstrapMode}</span>
+              <h3>{t('home.bootstrap')}</h3>
+              <span>{t(`enum.bootstrapMode.${bootstrapMode}`)}</span>
             </div>
             <dl className="details-list">
               <div>
-                <dt>Household ID</dt>
-                <dd>{householdId ?? 'Not resolved yet'}</dd>
+                <dt>{t('home.householdId')}</dt>
+                <dd>{householdId ?? t('home.notResolvedYet')}</dd>
               </div>
               <div>
-                <dt>Member role</dt>
-                <dd>{member?.role ?? 'Unknown'}</dd>
+                <dt>{t('home.memberRole')}</dt>
+                <dd>{member?.role ? t(`enum.householdMemberRole.${member.role}`) : t('home.unknown')}</dd>
               </div>
               <div>
-                <dt>Member email</dt>
-                <dd>{member?.email ?? user?.email ?? 'Unavailable'}</dd>
+                <dt>{t('home.memberEmail')}</dt>
+                <dd>{member?.email ?? user?.email ?? t('home.unavailable')}</dd>
               </div>
             </dl>
           </div>
@@ -61,15 +63,15 @@ export function HomePage() {
 
       <section className="panel stack">
         <div className="section-heading">
-          <h3>Search preview</h3>
-          <span>Top 3 candidate shape</span>
+          <h3>{t('home.searchPreview')}</h3>
+          <span>{t('home.topThree')}</span>
         </div>
         {searchPreviewResults.map((result) => (
           <article className="list-card" key={`${result.itemName}-${result.placePath}`}>
             <strong>{result.itemName}</strong>
             <span>{result.placePath}</span>
             <small>
-              {result.freshness} · last verified {result.lastVerifiedAt}
+              {t(`enum.freshnessStatus.${result.freshness}`)} · {t('home.lastVerified')} {result.lastVerifiedAt}
             </small>
           </article>
         ))}

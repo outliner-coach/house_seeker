@@ -50,6 +50,13 @@ button {
   padding: 1rem 0 0.5rem;
 }
 
+.topbar-row {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 1rem;
+}
+
 .eyebrow {
   margin: 0;
   color: #6c6f78;
@@ -176,6 +183,25 @@ button {
 
 .helper-text {
   color: #475065;
+}
+
+.locale-switcher {
+  display: flex;
+  flex-direction: column;
+  gap: 0.35rem;
+  min-width: 7.5rem;
+}
+
+.locale-switcher.compact {
+  min-width: 6.5rem;
+}
+
+.locale-switcher.compact span {
+  font-size: 0.78rem;
+}
+
+.locale-switcher select {
+  width: 100%;
 }
 
 .details-list {
