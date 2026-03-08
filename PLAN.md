@@ -4,7 +4,7 @@ Last updated: 2026-03-08
 
 ## Objective
 
-Define and prepare a buildable product for the household item-location service before implementation starts.
+Build the first working prototype of the household item-location service with a stable baseline for parallel agent work.
 
 ## Planning rules
 
@@ -15,12 +15,13 @@ Define and prepare a buildable product for the household item-location service b
 ## Current phase
 
 Phase:
-- implementation planning and parallel workstream setup
+- implementation baseline and foundation work
 
 Known constraints:
 - stay focused on product and UX
 - do not spend time on business-model or expansion work
 - use the benchmark elements in `references/benchmark-elements.md` as the current baseline
+- keep Firebase membership docs keyed by `uid` for rules and bootstrap consistency
 
 ## Task board
 
@@ -40,36 +41,37 @@ Known constraints:
 | Completed | P2 | Draft system design for image analysis and retrieval | `architecture/system-design.md` | Firebase-based architecture and async analysis flow documented |
 | Completed | P1 | Define detailed implementation workstreams | `workflow/implementation-plan.md` | Parallel execution plan and ownership rules documented |
 | Completed | P1 | Define prototype subfolder ownership | `prototype/mobile-web/`, `prototype/functions/`, `prototype/shared/`, `prototype/firebase/` | Parallel lanes created for agents |
+| Completed | P0 | Scaffold implementation workspace baseline | root workspace config, `prototype/mobile-web/`, `prototype/shared/`, `prototype/functions/`, `prototype/firebase/` | `pnpm` workspace, frontend shell, shared schemas, functions stub, and Firebase config now build |
+| In progress | P0 | Finish auth shell and household bootstrap | signed-in shell and automatic household provisioning | Sign-in flow and protected app shell exist; real household bootstrap is now wired |
+| Ready | P1 | Build place hierarchy | place list, detail, create, edit, and path browsing | Start in `prototype/mobile-web/src/features/places/` |
+| Ready | P1 | Build capture upload flow | camera intake, capture records, Storage upload | Depends on place detail and existing Storage config |
+| Ready | P1 | Build review queue and confirmation | review list, candidate edits, confirmed item writes | Depends on capture flow and worker stub |
+| Ready | P1 | Build deterministic search and browse | search results, browse by place, item detail | Can start against shared item contracts |
+| Ready | P1 | Wire emulator and environment setup docs | `.env.example`, README updates, emulator routine | Keep future agent setup friction low |
 | Backlog | P2 | Draft privacy and threat boundaries | `architecture/privacy-threat-notes.md` | Use installed `security-threat-model` after system design exists |
-| Ready | P1 | Scaffold base workspace and shared contracts | prototype starter files | Start WS1, WS2, WS3 from `workflow/implementation-plan.md` |
-| Ready | P1 | Build auth shell and household bootstrap | frontend auth flow | Start after Firebase client initialization exists |
-| Backlog | P2 | Build place hierarchy | place CRUD and path browsing | Depends on shared contracts and app shell |
-| Backlog | P2 | Build capture-upload-review loop | capture, task enqueue, review queue | Depends on place detail and worker stub |
-| Backlog | P2 | Build search, browse, and item detail | retrieval flows | Depends on confirmed item writes |
 
 ## Suggested execution order
 
-1. Draft `architecture/privacy-threat-notes.md` if security review is needed before coding.
-2. Start WS1, WS2, and WS3 in parallel from `workflow/implementation-plan.md`.
-3. Start WS4 once Firebase client initialization exists.
-4. Implement the place hierarchy before the capture-review loop.
+1. Finish the WS4 household bootstrap path and verify it against the current Firebase rules.
+2. Start WS5 place hierarchy in `prototype/mobile-web/`.
+3. Start WS6 capture upload against the existing Firebase Storage structure.
+4. Start WS7 and WS8 once place detail and capture writes exist.
 
 ## Parallelization notes
 
 Safe to parallelize:
-- WS1 Foundation and scaffolding
-- WS2 Shared domain contracts
-- WS3 Firebase project configuration
-- WS4 App shell and auth once Firebase client init exists
+- WS5 place hierarchy UI
+- WS7 async analysis worker stub refinement
+- WS11 QA, fixtures, and emulator workflow
 
 Better done after product flows are stable:
 - privacy and threat notes
-- async analysis worker implementation
+- deeper async analysis worker implementation
 
 ## Definition of done for this phase
 
-- The product has a clear MVP scope.
-- Core flows are documented.
-- The minimum data model is documented.
-- Freshness and trust behavior are defined.
-- Another agent can start prototyping without guessing the product basics.
+- `pnpm install` works from the repository root.
+- the mobile web shell builds and typechecks.
+- Firebase rules, indexes, and config exist in one predictable location.
+- shared contracts exist for the main product entities.
+- another agent can start WS5 or WS6 without re-deciding the project baseline.

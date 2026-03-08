@@ -1,0 +1,4 @@
+packages:
+  - "prototype/mobile-web"
+  - "prototype/functions"
+  - "prototype/shared"

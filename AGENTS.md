@@ -11,8 +11,9 @@ Core idea:
 - the system extracts visible items, stores them under a location hierarchy, and later answers questions like `Where is the glue gun?`
 
 Current phase:
-- implementation planning completed
-- prototype scaffolding can now begin in parallel workstreams
+- implementation baseline is underway
+- WS1, WS2, and WS3 now have a runnable scaffold
+- frontend, shared contracts, functions, and Firebase config can continue in parallel
 
 ## Product scope
 
@@ -56,6 +57,9 @@ Out of scope for now:
 - `prototype/shared/README.md`: shared contract lane
 - `prototype/firebase/README.md`: Firebase config lane
 - `assets/README.md`: assets folder guide
+- `package.json`: workspace-level scripts for build, typecheck, and Firebase emulators
+- `pnpm-workspace.yaml`: workspace package boundaries
+- `tsconfig.base.json`: shared TypeScript compiler baseline
 - `PLAN.md`: current task queue and execution order
 - `PROGRESS.md`: dated work log and current snapshot
 
@@ -142,6 +146,7 @@ Technical artifacts:
 - Search results should show an exact location path and a recent verification signal.
 - Relocation must be easier than initial entry.
 - The product should work for a shared family household, not a single-user collector.
+- Firebase membership documents are keyed by the authenticated user's `uid` in v1.
 
 ## Open decisions
 

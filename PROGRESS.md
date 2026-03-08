@@ -18,9 +18,17 @@ Status:
 - MVP scope, data model, screen map, and system design are now documented
 - detailed implementation workstreams are now documented
 - prototype lanes for parallel agents are now defined
+- `pnpm` workspace baseline is now created
+- mobile web shell and sign-in flow now build locally
+- shared schemas, Firebase rules, and functions stub are now wired
+- automatic household bootstrap is now the active implementation focus
 
 Current repository contents:
 - `.gitignore`
+- `package.json`
+- `pnpm-lock.yaml`
+- `pnpm-workspace.yaml`
+- `tsconfig.base.json`
 - `references/README.md`
 - `references/competitive-landscape.md`
 - `references/benchmark-elements.md`
@@ -38,17 +46,29 @@ Current repository contents:
 - `architecture/ai-roles.md`
 - `architecture/system-design.md`
 - `prototype/README.md`
+- `prototype/mobile-web/.env.example`
+- `prototype/mobile-web/package.json`
 - `prototype/mobile-web/README.md`
+- `prototype/mobile-web/src/`
 - `prototype/functions/README.md`
+- `prototype/functions/package.json`
+- `prototype/functions/src/`
 - `prototype/shared/README.md`
+- `prototype/shared/package.json`
+- `prototype/shared/src/`
 - `prototype/firebase/README.md`
+- `prototype/firebase/.firebaserc`
+- `prototype/firebase/firebase.json`
+- `prototype/firebase/firestore.indexes.json`
+- `prototype/firebase/firestore.rules`
+- `prototype/firebase/storage.rules`
 - `assets/README.md`
 - `AGENTS.md`
 - `PLAN.md`
 - `PROGRESS.md`
 
 Recommended next task:
-- start WS1, WS2, and WS3 from `workflow/implementation-plan.md`
+- finish the household bootstrap path and then start the place hierarchy flow in `prototype/mobile-web/src/features/places/`
 
 ## Work log
 
@@ -189,6 +209,30 @@ Outputs:
 
 Open follow-up:
 - start WS1, WS2, and WS3 in parallel and keep file ownership strict
+
+### 2026-03-08 - Implementation baseline scaffolded
+
+Completed:
+- created a root `pnpm` workspace with shared scripts for build, typecheck, and Firebase emulators
+- scaffolded the Vite React mobile web app under `prototype/mobile-web/`
+- added the first app shell, tab navigation, Firebase client setup, and sign-in flows
+- added shared Zod schemas and constants under `prototype/shared/`
+- added Firebase Functions stubs for healthcheck and capture-analysis orchestration
+- added initial Firebase Hosting, Firestore Rules, Storage Rules, and index config under `prototype/firebase/`
+- started wiring real household bootstrap logic so signed-in users can find or create their first household
+- verified `pnpm typecheck`, `pnpm build:web`, and `pnpm --filter @house-seeker/functions build`
+
+Outputs:
+- root workspace files: `package.json`, `pnpm-workspace.yaml`, `pnpm-lock.yaml`, `tsconfig.base.json`
+- frontend baseline under `prototype/mobile-web/`
+- shared contracts under `prototype/shared/`
+- functions baseline under `prototype/functions/`
+- Firebase config baseline under `prototype/firebase/`
+
+Open follow-up:
+- complete household bootstrap and replace more shell-mode data with Firestore-backed reads
+- build place CRUD and path browsing next
+- document emulator and environment setup for other agents
 
 ### 2026-03-08 - Git initialized and prepared for publishing
 

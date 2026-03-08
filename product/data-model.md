@@ -83,6 +83,7 @@ Required fields:
 First-version rule:
 - all members can read and write
 - `role` can still exist for future expansion
+- Firestore implementation uses the Firebase `uid` as the `householdMember.id`
 
 ### 3.4 place
 

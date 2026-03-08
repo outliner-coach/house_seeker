@@ -11,7 +11,7 @@ Put these here:
 - UI experiments
 - proof-of-concept code for image analysis or search
 
-Suggested future subfolders:
+Current subfolders:
 - `mobile-web/`
 - `functions/`
 - `shared/`
@@ -21,3 +21,4 @@ Notes:
 - do not mix prototype code with planning documents
 - the target platform is now mobile web on Firebase
 - use `workflow/implementation-plan.md` for execution order and workstream ownership
+- root workspace scripts live in `/Users/friends/ai/homeauto/package.json`

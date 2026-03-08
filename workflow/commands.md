@@ -8,6 +8,30 @@ Run commands from the repository root unless noted otherwise:
 Current workspace note:
 - this folder is initialized as a Git repository
 - origin remote should point to `https://github.com/outliner-coach/house_seeker.git`
+- the prototype now uses a root `pnpm` workspace
+- Firebase config lives under `prototype/firebase/`
+
+## Workspace setup
+
+Install workspace dependencies:
+```bash
+pnpm install
+```
+
+Start the mobile web app:
+```bash
+pnpm dev:web
+```
+
+Run all typechecks:
+```bash
+pnpm typecheck
+```
+
+Build the full prototype baseline:
+```bash
+pnpm build
+```
 
 ## Repository inspection
 
@@ -58,6 +82,46 @@ git remote -v
 Push the current branch:
 ```bash
 git push -u origin main
+```
+
+Create a focused implementation commit:
+```bash
+git add .
+git commit -m "Start prototype implementation baseline"
+```
+
+## Prototype verification
+
+Build only the mobile web app:
+```bash
+pnpm build:web
+```
+
+Lint the mobile web app:
+```bash
+pnpm lint:web
+```
+
+Build only the functions package:
+```bash
+pnpm --filter @house-seeker/functions build
+```
+
+## Local Firebase
+
+Start the Firebase Emulator Suite:
+```bash
+pnpm emulators
+```
+
+Deploy rules only:
+```bash
+pnpm firebase:deploy:rules
+```
+
+Deploy hosting only:
+```bash
+pnpm firebase:deploy:hosting
 ```
 
 ## Research and reference gathering
@@ -118,4 +182,4 @@ sed -n '1,260p' PROGRESS.md
 
 - Use `rg` for search whenever possible.
 - Use `apply_patch` for manual file edits.
-- Add stack-specific commands only after the prototype target is decided.
+- Replace the placeholder Firebase project id in `prototype/firebase/.firebaserc` before live deployment.

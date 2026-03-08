@@ -1,0 +1,57 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+    function isSignedIn() {
+      return request.auth != null;
+    }
+
+    // Use the Firebase uid as the member document id for simple rule checks.
+    function memberDocPath(householdId) {
+      return /databases/$(database)/documents/households/$(householdId)/members/$(request.auth.uid);
+    }
+
+    function isHouseholdMember(householdId) {
+      return isSignedIn() && exists(memberDocPath(householdId));
+    }
+
+    match /households/{householdId} {
+      allow create: if isSignedIn() && request.resource.data.createdByUserId == request.auth.uid;
+      allow get, update: if isHouseholdMember(householdId);
+      allow list, delete: if false;
+
+      match /members/{memberId} {
+        allow read: if isHouseholdMember(householdId);
+        allow create: if isSignedIn()
+          && memberId == request.auth.uid
+          && request.resource.data.userId == request.auth.uid
+          && request.resource.data.householdId == householdId;
+        allow update: if isHouseholdMember(householdId);
+        allow delete: if false;
+      }
+
+      match /places/{placeId} {
+        allow read, write: if isHouseholdMember(householdId);
+      }
+
+      match /captures/{captureId} {
+        allow read, write: if isHouseholdMember(householdId);
+      }
+
+      match /itemCandidates/{candidateId} {
+        allow read, write: if isHouseholdMember(householdId);
+      }
+
+      match /items/{itemId} {
+        allow read, write: if isHouseholdMember(householdId);
+      }
+
+      match /itemLocations/{itemLocationId} {
+        allow read, write: if isHouseholdMember(householdId);
+      }
+
+      match /activities/{activityId} {
+        allow read, write: if isHouseholdMember(householdId);
+      }
+    }
+  }
+}

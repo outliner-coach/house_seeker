@@ -165,6 +165,10 @@ Why this shape:
 - simplifies Security Rules
 - keeps shared data inside one clear boundary
 
+Important implementation rule:
+- in v1, `members/{memberId}` uses the Firebase Auth `uid` as the document id
+- Firestore Rules and household bootstrap should both rely on this convention
+
 ### Important Firestore caveat
 
 Because deleting a parent document does not delete subcollections, the product should:
@@ -193,7 +197,7 @@ Why:
 
 1. User authenticates with Firebase Auth.
 2. Client checks whether a household membership exists.
-3. If not, client creates a household document and the first member record.
+3. If not, client creates a household document and the first member record at `members/{uid}`.
 4. Client routes into the shared workspace.
 
 ### 8.2 Place CRUD
@@ -296,6 +300,7 @@ Rules should enforce:
 - only authenticated users can access household data
 - users can access only households they belong to
 - write access is limited to household members
+- membership checks read `households/{householdId}/members/{uid}`
 - deleted or protected states cannot be bypassed by direct client writes
 
 ### Storage Rules direction
@@ -332,7 +337,6 @@ Recommended baseline:
 
 ## 14. Open implementation questions
 
-- final Firebase project layout between app and functions directories
 - exact AI model provider and invocation method
 - exact Firestore query shapes for Korean token matching
 - whether review confirmation should be client-driven or function-mediated
