@@ -8,6 +8,23 @@ function isLocale(value: string | null): value is Locale {
   return value === 'ko' || value === 'en'
 }
 
+function lookupFirebaseErrorKey(error: unknown) {
+  if (!error || typeof error !== 'object' || !('code' in error)) {
+    return null
+  }
+
+  const code = typeof error.code === 'string' ? error.code : null
+
+  switch (code) {
+    case 'permission-denied':
+      return 'error.firestore.permissionDenied'
+    case 'unauthenticated':
+      return 'error.firestore.unauthenticated'
+    default:
+      return null
+  }
+}
+
 function readStoredLocale(): Locale {
   if (typeof window === 'undefined') {
     return 'ko'
@@ -40,6 +57,12 @@ export function LocaleProvider({ children }: PropsWithChildren) {
 
   const formatError = useCallback(
     (error: unknown, fallbackKey: string) => {
+      const firebaseErrorKey = lookupFirebaseErrorKey(error)
+
+      if (firebaseErrorKey) {
+        return t(firebaseErrorKey)
+      }
+
       if (error instanceof Error) {
         if (error.message.startsWith('error.')) {
           return t(error.message)

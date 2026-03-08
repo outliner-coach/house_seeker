@@ -20,7 +20,13 @@ service cloud.firestore {
       allow list, delete: if false;
 
       match /members/{memberId} {
-        allow read: if isHouseholdMember(householdId);
+        // Bootstrap needs to query the signed-in user's own membership record
+        // before it knows the household id. Household members can still read
+        // the full members subcollection after joining.
+        allow get: if isSignedIn()
+          && (memberId == request.auth.uid || isHouseholdMember(householdId));
+        allow list: if isSignedIn()
+          && (resource.data.userId == request.auth.uid || isHouseholdMember(householdId));
         allow create: if isSignedIn()
           && memberId == request.auth.uid
           && request.resource.data.userId == request.auth.uid
